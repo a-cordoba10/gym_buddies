@@ -1,5 +1,5 @@
 {
-  "name": "gym_buddies",
+  "name": "gym-buddies",
   "private": true,
   "scripts": {
     "start": "meteor run"
