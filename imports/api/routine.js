@@ -5,13 +5,13 @@ import { check } from 'meteor/check';
 export const Routines = new Mongo.Collection('routines');
 
 if (Meteor.isServer) {
-  Meteor.publish('routines', function tasksPublication() {
+  Meteor.publish('routines', function routinePublication() {
     return Routines.find({ });
   });
 }
 
 Meteor.methods({
-  'routines.insert'(purpose, exercises) {
+  'routines.insert'(name, purpose, exercises) {
     check(purpose, String);
 
     if (! this.userId) {
@@ -19,12 +19,18 @@ Meteor.methods({
     }
 
     Routines.insert({
+      name,
       userID: this.userId,
       username: Meteor.users.findOne(this.userId).username,
       createdAt: new Date(),
       purpose, 
       comments: [],
-      reactions: [], 
+      reactions: {
+        toy: 0, //Severo muñeco
+        tiger: 0, //Fuerza tigre
+        rat: 0, //Buena la rata
+        poop: 0, //Mucho popo
+      }, 
       exercises,
     });
   },
@@ -46,10 +52,14 @@ Meteor.methods({
     if (! Meteor.userId()) {
         throw new Meteor.Error('User not log in');
     }
-
-    Tasks.update(routineId, { $addToSet: { comments: comment }});
+    const newComment = {
+      username: Meteor.users.findOne(this.userId).username,
+      createdAt: new Date(),
+      comment,
+    }
+    Routines.update(routineId, { $addToSet: { comments: newComment }});
   },
-  'tasks.addReaction'(routineId, reaction) {
+  'routines.addReaction'(routineId, reaction) {
     check(routineId, String);
     check(reaction, String);
 
@@ -59,6 +69,10 @@ Meteor.methods({
         throw new Meteor.Error('User not log in');
     }
 
-    Tasks.update(routineId, { $addToSet: { reactions: reaction }});
+    Routines.update(routineId, { $addToSet: { reactions: reaction }});
+  },
+  'routines.getRoutine'(routineId) {
+    check(routineId, String);
+    return Routines.findOne(routineId);
   },
 });
