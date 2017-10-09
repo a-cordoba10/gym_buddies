@@ -1,107 +1,186 @@
 /* CSS declarations go here */
 body {
-  font-family: sans-serif;
-  background-color: #315481;
-  background-image: linear-gradient(to bottom, #315481, #918e82 100%);
-  background-attachment: fixed;
-
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  padding: 0;
+  font-family: 'Muli', sans-serif;
+  background-color: white;
+  color: black;
   margin: 0;
-
-  font-size: 14px;
 }
-
+button {
+  font-weight: 900;
+}
+button:focus, input[type=text], input[type=number] {
+  outline:0;
+}
 .container {
-  max-width: 600px;
+  text-align: center;
   margin: 0 auto;
   min-height: 100%;
-  background: white;
-}
 
+}
+.login-buttons-dropdown-align-{
+  text-align: right;
+}
+#login-dropdown-list {
+  top: 3.5vh;
+  right: 0;
+  left: inherit;
+}
+#login-buttons .login-button, .accounts-dialog .login-button {
+  background-color: black;
+  border-radius: 0;
+  transition: all 0.25s;
+}
+#login-buttons:hover .login-button:hover, .accounts-dialog .login-button:hover {
+  background-color: rgb(88, 88, 88);
+} 
+.accounts-dialog {
+  text-align: left;
+  border-radius: 0;
+}
+.weights {
+  width: 80px;
+  height: auto;
+}
 header {
-  background: #d2edf4;
-  background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
-  padding: 20px 15px 15px 15px;
-  position: relative;
+  padding: 10vh 5vw;
+  color: white;
+  background-color: black;
+  background: url(cover.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
-
+.newRoutine {
+  display: inline-block;
+  width: 60%;
+  box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
+  margin: 2vh 0;
+  padding-bottom: 5vh;
+}
+.newRoutine label {
+  display: inline-block;
+  width: 10%;
+  margin: 10px;
+  color: rgb(175, 175, 175);
+  text-align: left;
+}
+input[type=text] {
+  width: 50%;
+  border: none;
+}
+input[type=number] {
+  border: none;
+  width: 50%;
+}
+.addRoutine {
+  font-size: 1.5em;
+  font-weight: 900;
+  background-color: #392de4;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 25px 35px;
+  transition: all 0.25s;
+}
+.addRoutine:hover {
+  cursor: pointer;
+  background-color: #231d96;
+}
+.routines {
+  min-height: 60vh;
+}
+.error {
+  color: red;
+}
 #login-buttons {
   display: block;
 }
-
-h1 {
-  font-size: 1.5em;
-  margin: 0;
-  margin-bottom: 10px;
-  display: inline-block;
-  margin-right: 1em;
+.routine {
+  width: 200px;
+  height: auto;
+  box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
+  margin: 50px;
+  padding: 25px;
 }
-
+.routine h3, .routine h4 {
+  margin: 0;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+.routineIcon {
+  width: 80%;
+}
+.routine button, .exercises button, .modal-content button {
+  border: none;
+  width: 90%;
+  padding: 15px 25px;
+  background-color: black;
+  color: white;
+  transition: all 0.25s;
+}
+.exercises button {
+  margin-top:15px;
+}
+.exercise {
+  border-bottom: 1px solid rgb(192, 192, 192);
+  width: 80%;
+  margin: 15px auto;
+  padding: 15px 0;
+}
+.exercise button {
+  background-color: red;
+  width: auto;
+  margin-left: 15px;
+}
+.routine button:hover, .exercises button:hover, .modal-content button:hover { 
+  cursor: pointer;
+  background-color: rgb(114, 114, 114);
+}
+.exercise button:hover {
+  background-color: rgb(211, 0, 0);
+}
+h1 {
+  text-align: left;
+  font-weight: 900;
+  font-size: 6em;
+  margin: 0;
+  margin-top: 5vh;
+}
+h2 {
+  font-weight: 300;
+  text-align: left;
+}
+h3 {
+  font-size: 2em;
+}
+h4 {
+  font-weight: 300;
+}
 form {
   margin-top: 10px;
   margin-bottom: -10px;
   position: relative;
 }
-
-.new-task input {
-  box-sizing: border-box;
-  padding: 10px 0;
-  background: transparent;
-  border: none;
-  width: 100%;
-  padding-right: 80px;
-  font-size: 1em;
+.exercises {
+  border: black solid 1px;
+  width: 80%;
+  margin: 50px auto;
+  padding: 25px 0;
 }
-
-.new-task input:focus{
-  outline: 0;
-}
-
-ul {
+.exercises h4 {
   margin: 0;
-  padding: 0;
-  background: white;
+  margin-bottom: 15px;
+  font-size: 1.5em;
 }
-
-.delete {
-  float: right;
-  font-weight: bold;
-  background: none;
-  font-size: 1em;
-  border: none;
-  position: relative;
+.comment {
+  border: black solid 1px; 
+  margin: 10px 0 10px 5%;
+  width: 80%;
+  padding: 25px;
+  display: inline-block;
+  line-height: 50px; 
 }
-
-li {
-  position: relative;
-  list-style: none;
-  padding: 15px;
-  border-bottom: #eee solid 1px;
-}
-
-li .text {
-  margin-left: 10px;
-}
-
-li.checked {
-  color: #888;
-}
-
-li.checked .text {
-  text-decoration: line-through;
-}
-
-li.private {
-  background: #eee;
-  border-color: #ddd;
-}
-
 header .hide-completed {
   float: right;
 }
@@ -109,25 +188,20 @@ header .hide-completed {
 .toggle-private {
   margin-left: 5px;
 }
-
-@media (max-width: 600px) {
-  li {
-    padding: 12px 15px;
-  }
-
-  .search {
-    width: 150px;
-    clear: both;
-  }
-
-  .new-task input {
-    padding-bottom: 5px;
-  }
+.comment span:nth-child(1) {
+  float: right;
 }
-
-
+.modal-content input[type=text] {
+  margin: 10px 0 50px 5%;
+  box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
+  padding: 15px 15px;
+}
+.modal-content button {
+  width: auto;
+}
 /* The Modal (background) */
 .modal {
+  text-align: left;
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -144,22 +218,46 @@ header .hide-completed {
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
+  padding-bottom: 25px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
 }
-
+.modal-header {
+  padding: 1.5% 5%;
+  width: 90%;
+  color: white;
+  background-color: #392de4;
+  margin-bottom: 25px;
+}
+.modal-header button {
+  background-color: white;
+  color: black;
+  margin: 25px 5px 0 5px;
+}
 /* The Close Button */
 .close {
-  color: #aaa;
+  color: #231d96;
   float: right;
   font-size: 28px;
   font-weight: bold;
+  transition: all 0.25s;
 }
-
+.modal h1 {
+  font-size: 1.5em;
+  display: inline-block;
+  margin: 15px 15px;
+}
+.modal h2 {
+  display: inline-block;
+  margin: 0;
+}
 .close:hover,
 .close:focus {
-  color: black;
+  color: white;
   text-decoration: none;
   cursor: pointer;
+}
+.icontReact {
+  width: 15%;
+  margin-right: 15px;
 }

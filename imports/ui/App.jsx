@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import { Tasks } from '../api/tasks.js';
 import{Exercisers} from'../api/exercisers.js';
 import { Routines } from '../api/routine.js';
 
-import Task from './Task.jsx';
+
 import AccountsUIWrapper from './AccountsUIWrapper.jsx';
+
 
 // App component - represents the whole app
 class App extends Component {
@@ -59,9 +59,6 @@ class App extends Component {
     }
     Meteor.call('exercisers.insert', temp);
   }
-
-
-
   setInteresting(event) {
     console.log(event.target.value);
     this.setState(
@@ -81,6 +78,17 @@ class App extends Component {
   addComment() {
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
+  }
+  getRandomImg() {
+    var rand = Math.floor(Math.random() * 5);
+    if(rand === 1) {
+      return './exercise.svg';
+    } else if ( rand === 2 ) {
+      return './gym.svg';
+    } else if ( rand === 3) {
+      return './mat.svg';
+    }
+    return './arm.svg';
   }
   showRoutine(r) {
 
@@ -138,18 +146,22 @@ class App extends Component {
   renderRoutines() {
     return this.props.routines.map((routine) => {
 
-      return (<div key={routine._id}>{routine.username} | <button onClick={() => this.showRoutine(routine)}>See Routine</button></div>);
+      return (<div className="routine" key={routine._id}>
+      <img src={this.getRandomImg()} className="routineIcon" /> <br />
+      <h3>{routine.name}</h3> <b>by:</b> <h4>{routine.username}</h4>
+      <button onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+      </div>);
     });
   }
   renderNewRoutine() {
     if (this.state.exercises.length > 0) {
       return this.state.exercises.map((exercise, key) => {
-        return (<div>
-          {exercise.name} |
-          {exercise.repetitions} |
-          {exercise.restTime} |
-          {exercise.series} |
-          <button type="button" onClick={() => this.deleteExercise(key)}>Delete Exercise</button>
+        return (<div className="exercise">
+          <b>Name:</b> {exercise.name}  &nbsp;
+          <b>Series:</b>{exercise.series} &nbsp;
+          <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
+          <b>Rest Time:</b> {exercise.restTime}
+          <button type="button" onClick={() => this.deleteExercise(key)}>DELETE</button>
         </div>)
       });
     }
@@ -157,10 +169,10 @@ class App extends Component {
   }
   renderComments() {
     return this.state.routine.comments.map((comment) => {
-      return (<div>
-        {comment.username} |
-          {this.parseDate(comment.createdAt)} |
-          {comment.comment}
+      return (<div className="comment">
+        {comment.username}
+          <span> {this.parseDate(comment.createdAt)} </span>
+          <br /><span>{comment.comment}</span>
       </div>)
     });
   }
@@ -183,38 +195,43 @@ class App extends Component {
       <div className="container">
         <header>
           <AccountsUIWrapper />
-          {this.props.currentUser ?
-            <button onClick={this.toggleShowForm.bind(this)}>Add Routine</button> : ''
-          }
-        </header>
 
+          <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" /></h1>
+        <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
+        </header>
+        {this.props.currentUser ?
+            <button className="addRoutine" onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
+          }
         <div id="myModal" className="modal">
           {this.state.routine ?
             <div className="modal-content">
+              <div className="modal-header">
               <span className="close" onClick={this.closeModal.bind(this)}>&times;</span>
-              <p>{this.state.routine.name}</p>
-              <p>{this.state.routine.username}</p>
-              <p>{this.state.routine.purpose}</p>
-              <button onClick={()=>this.addReaction('rat')}>{this.state.routine.reactions.rat}</button>
-              <button onClick={()=>this.addReaction('tiger')}>{this.state.routine.reactions.tiger}</button>
-              <button onClick={()=>this.addReaction('poop')}>{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')}>{this.state.routine.reactions.toy}</button>
-              {this.renderComments()}
+              <h2>Routine Name:</h2> <h1>{this.state.routine.name}</h1> <br />
+              <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
+              <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
+              <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
+              <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
+              <button onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
+              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button>
+              </div>
               {this.props.currentUser ?
                 <form className="new-comment" onSubmit={this.handleSubmit.bind(this)}  >
                   <input
                     type="text"
                     ref="comment"
                     placeholder="Type to add a new comment"
-                  />
+                  /><button>SEND</button>
                 </form> : ''}
+                {this.renderComments()}
             </div>
 
             : ''}
         </div>
-
-        {this.state.showRoutineForm && this.props.currentUser ? <div>
-          {this.state.formError}
+        
+        {this.state.showRoutineForm && this.props.currentUser ? <div className="newRoutine">
+          <h3>Create a new routine</h3>
+          <span className="error">{this.state.formError}</span>
           <form onSubmit={this.addRoutine.bind(this)}>
             <label for="name">Name</label><input
               required
@@ -222,55 +239,59 @@ class App extends Component {
               type="text"
               ref="name"
               placeholder="The name of your routine"
-            />
+            /> <br />
             <label for="purpose">Purpose</label><input
               required
               name="purpose"
               type="text"
               ref="purpose"
               placeholder="The purpose of your routine"
-            />
-            <label for="exercise">Exercise</label><input
+            /> <br />
+            <div className="exercises">
+              <h4>Routine Exercises</h4>
+            <label for="exercise">Name</label><input
               required
               name="exercise"
               type="text"
               ref="exercise"
               placeholder="Name of the exercise"
-            />
+            /> <br/>
             <label for="series">Series</label>
             <input
               name="series"
               type="number"
               min="1"
               ref="series"
-            />
+              placeholder="Number of series"
+            /> <br />
             <label for="repetitions">Repetitions</label>
             <input
               name="repetitions"
               type="number"
               min="1"
               ref="repetitions"
-            />
+              placeholder="Number of repetitions"
+            /> <br />
             <label for="restTime">Rest Time (s)</label>
             <input
               name="restTime"
               type="number"
               min="1"
               ref="restTime"
-            />
+              placeholder="Rest time between series"
+            /> <br />
             <button
               type="button"
               onClick={this.addExercise.bind(this)}>
-              Add Exercise
+              ADD EXERCISE
           </button>
             {this.renderNewRoutine()}
-            {this.state.exercises.length ? <button >Add Routine</button> : ''}
+            </div>
+            {this.state.exercises.length ? <button >ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
-        
-        <ul>
+        <div className="routines">
           {this.renderRoutines()}
-        </ul>
 
         {!this.props.user && this.props.currentUser ?
           <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
@@ -293,7 +314,7 @@ class App extends Component {
             <button type="submit" >Guardar</button>
           </form> : ''
         }
-
+      </div>
       </div>
     );
   }
@@ -301,7 +322,6 @@ class App extends Component {
 
 App.propTypes = {
   user: PropTypes.object,
-  incompleteCount: PropTypes.number.isRequired,
   currentUser: PropTypes.object,
 };
 
@@ -312,13 +332,11 @@ export default createContainer(() => {
     return {
       user: Exercisers.findOne({ userId: Meteor.user()._id }),
       routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
-      incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
       currentUser: Meteor.user(),
     }
   }
     return {
       routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
-      incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
       currentUser: Meteor.user(),
     }
 
