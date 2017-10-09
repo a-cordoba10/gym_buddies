@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import{Exercisers} from'../api/exercisers.js';
+import { Exercisers } from '../api/exercisers.js';
 import { Routines } from '../api/routine.js';
 
 
@@ -22,6 +22,7 @@ class App extends Component {
       formError: '',
       selectedOption: 'ganarMasaMuscular',
       interestingIn: '',
+      selectedUser: {},
 
     };
   }
@@ -36,27 +37,30 @@ class App extends Component {
     });
     ReactDOM.findDOMNode(this.refs.comment).value = '';
   }
-  addReaction (reaction) {
+  addReaction(reaction) {
     Meteor.call('routines.addReaction', this.state.routine._id, reaction);
     const r = Routines.findOne(this.state.routine._id);
     this.setState({
       routine: r,
     });
   }
-  handleSubmit2(event){
+  handleSubmit2(event) {
 
     event.preventDefault();
     const temp = {
       name: ReactDOM.findDOMNode(this.refs.papapapap).value.trim(),
       age: ReactDOM.findDOMNode(this.refs.age).value.trim(),
       weight: ReactDOM.findDOMNode(this.refs.weight).value.trim(),
-      heightT: ReactDOM.findDOMNode(this.refs.height).value.trim(),
-      emailT: ReactDOM.findDOMNode(this.refs.email).value.trim(),
+      height: ReactDOM.findDOMNode(this.refs.heightxxx).value.trim(),
+      email: ReactDOM.findDOMNode(this.refs.ccccccc).value.trim(),
       routines: [],
       interestingIn: this.state.interestingIn,
       userId: this.props.currentUser._id,
+      following: [],
 
     }
+
+    console.log(JSON.stringify(temp));
     Meteor.call('exercisers.insert', temp);
   }
   setInteresting(event) {
@@ -81,11 +85,11 @@ class App extends Component {
   }
   getRandomImg() {
     var rand = Math.floor(Math.random() * 5);
-    if(rand === 1) {
+    if (rand === 1) {
       return './exercise.svg';
-    } else if ( rand === 2 ) {
+    } else if (rand === 2) {
       return './gym.svg';
-    } else if ( rand === 3) {
+    } else if (rand === 3) {
       return './mat.svg';
     }
     return './arm.svg';
@@ -106,6 +110,13 @@ class App extends Component {
       }
     }
   }
+
+  showRoutine2(r) {
+    this.closeModalUser()
+    this.showRoutine(r)
+  }
+
+
   closeModal() {
     var modal = document.getElementById('myModal');
     modal.style.display = "none";
@@ -143,13 +154,97 @@ class App extends Component {
     });
   }
 
+  showUser(r) {
+    console.log(r);
+    const x = Exercisers.findOne({ userId: r });
+    this.setState({
+      selectedUser: x,
+    });
+
+    var modal = document.getElementById('myModalUser');
+
+    modal.style.display = "block";
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  }
+
+  follow(obj) {
+    const actual = Exercisers.findOne({ userId: Meteor.user()._id });
+    actual.following.push({ userId: obj._id, name: obj.name });
+    Exercisers.update({ _id: actual._id }, actual);
+  }
+
+  unfollow(obj) {
+
+
+    const actual = Exercisers.findOne({ userId: Meteor.user()._id });
+    for (var i = 0; i < actual.following.length; i++) {
+      if (actual.following[i].userId == obj._id) {
+        console.log('entra');
+        actual.following.splice(i, 1);
+        break;
+      }
+    }
+    Exercisers.update({ _id: actual._id }, actual);
+  }
+
+  imFollowing(idUsuario) {
+    const actual = Exercisers.findOne({ userId: Meteor.user()._id });
+
+    for (var i = 0; i < actual.following.length; i++) {
+      if (actual.following[i].userId == idUsuario)
+        return true;
+    }
+    return false;
+
+
+  }
+
+  closeModalUser() {
+    var modal = document.getElementById('myModalUser');
+    modal.style.display = "none";
+  }
+  renderRoutinesUser(idUser) {
+    if (Meteor.user()) {
+
+      return this.props.routines.filter(function (elem) {
+        return elem.userID == idUser;
+      }).map((exer) => {
+
+        return (<div key={exer._id} >   <button onClick={() => this.showRoutine2(exer)}>{exer.name}</button>  </div>);
+      });
+
+    }
+  }
+  renderFollowers() {
+    if (Meteor.user()) {
+      const li = this.props.user.following;
+      return this.props.exercisers.filter(function (elem) {
+        for (var i = 0; i < li.length; i++) {
+          if (li[i].userId == elem._id) {
+            return elem;
+          }
+        }
+      }).map((exer) => {
+
+        return (<div key={exer._id} >   <button onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
+      });
+
+    }
+  }
+
+
   renderRoutines() {
     return this.props.routines.map((routine) => {
 
       return (<div className="routine" key={routine._id}>
-      <img src={this.getRandomImg()} className="routineIcon" /> <br />
-      <h3>{routine.name}</h3> <b>by:</b> <h4>{routine.username}</h4>
-      <button onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+        <img src={this.getRandomImg()} className="routineIcon" /> <br />
+        <h3>{routine.name}</h3> <b>by:</b> <h4>{routine.username}</h4>
+        <button onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
     });
   }
@@ -171,8 +266,8 @@ class App extends Component {
     return this.state.routine.comments.map((comment) => {
       return (<div className="comment">
         {comment.username}
-          <span> {this.parseDate(comment.createdAt)} </span>
-          <br /><span>{comment.comment}</span>
+        <span> {this.parseDate(comment.createdAt)} </span>
+        <br /><span>{comment.comment}</span>
       </div>)
     });
   }
@@ -191,11 +286,31 @@ class App extends Component {
     return (year + '-' + month + '-' + dt);
   }
   render() {
-    return (
+    return ( 
       <div className="container">
         <header>
-          <AccountsUIWrapper />
+        {!this.props.user && this.props.currentUser ?
+            <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
 
+              <label for="name">Name: </label><input name="name" type="text" ref="papapapap" required />
+              <br />
+              <label for="age">Age:<input name="age" type="text" ref="age" required /></label>
+              <br />
+              <label for="weight">Weight:<input name="weight" type="number" min="0" ref="weight" required /></label>
+              <br />
+              <label for="height">Height: <input name="height" type="number" min="0" ref="heightxxx" required /> </label>
+              <br />
+              <label for="email">E-mail: <input name="email" type="email" ref="ccccccc" required /></label>
+              <br />
+              <div onChange={this.setInteresting.bind(this)}>
+                <input type="radio" value="Gain Mass" name="a" required /> Gain Mass
+                  <input type="radio" value="Loss weight" name="a" /> Loss weight
+                  <input type="radio" value="Hobby" name="a" /> Hobby
+             </div>
+              <button type="submit" >Guardar</button>
+            </form> : ''
+          }
+          <AccountsUIWrapper />
           <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" /></h1>
         <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
         </header>
@@ -224,6 +339,34 @@ class App extends Component {
                   /><button>SEND</button>
                 </form> : ''}
                 {this.renderComments()}
+            </div>
+            : ''}
+        </div>
+        <div id="myModalUser" className="modal">
+          {this.state.selectedUser ?
+            <div className="modal-content">
+              <span className="close" onClick={this.closeModalUser.bind(this)}>&times;</span>
+              <label >Name: {this.state.selectedUser.name}</label> <br />
+              <label >Age: {this.state.selectedUser.age}</label><br />
+              <label >E-mail:{this.state.selectedUser.email}</label><br />
+              <label >Weight: {this.state.selectedUser.weight}</label><br />
+              <label >Height: {this.state.selectedUser.height}</label><br />
+              <label >Interesting In: {this.state.selectedUser.interestingIn}</label><br />
+              {this.props.user && this.props.currentUser && !this.imFollowing(this.state.selectedUser._id) ?
+                <button onClick={() => this.follow(this.state.selectedUser)}>Follow</button>
+                : ''
+              }
+              {this.props.user && this.props.currentUser && this.imFollowing(this.state.selectedUser._id) ?
+                <button onClick={() => this.unfollow(this.state.selectedUser)}>Unfollow</button>
+                : ''
+              }
+              <ul>
+                <h1>Routines</h1>
+                {this.renderRoutinesUser(this.state.selectedUser.userId)}
+              </ul>
+
+
+
             </div>
 
             : ''}
@@ -290,54 +433,41 @@ class App extends Component {
             {this.state.exercises.length ? <button >ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
+        <ul>
+          <h1>Following</h1>
+          {this.renderFollowers()}
+        </ul>
         <div className="routines">
           {this.renderRoutines()}
-
-        {!this.props.user && this.props.currentUser ?
-          <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
-
-            <label for="name">Name: </label><input name="name" type="text" ref="papapapap" required />
-            <br />
-            <label for="age">Age:<input name="age" type="text" ref="age" required /></label>
-            <br />
-            <label for="weight">Weight:<input name="weight" type="number" min="0" ref="weight" required /></label>
-            <br />
-            <label for="height">Height: <input name="height" type="text" min="0" ref="height" required /> </label>
-            <br />
-            <label for="email">E-mail: <input name="email" type="email" ref="email" required /></label>
-            <br />
-            <div onChange={this.setInteresting.bind(this)}>
-              <input type="radio" value="ganarMasaMuscular" name="a" required /> Ganar Masa Muscular
-                  <input type="radio" value="perderPeso" name="a" /> Perder Peso
-                  <input type="radio" value="pasatiempo" name="a" /> Pasa tiempo
-             </div>
-            <button type="submit" >Guardar</button>
-          </form> : ''
-        }
+        
       </div>
       </div>
-    );
-  }
+    ) ;
+  
+}
 }
 
 App.propTypes = {
-  user: PropTypes.object,
+          user: PropTypes.object,
   currentUser: PropTypes.object,
 };
 
 export default createContainer(() => {
-  Meteor.subscribe('exercisers');
-  Meteor.subscribe('routines');
+          Meteor.subscribe('exercisers');
+        Meteor.subscribe('routines');
   if (Meteor.user()) {
     return {
-      user: Exercisers.findOne({ userId: Meteor.user()._id }),
-      routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
+          user: Exercisers.findOne({userId: Meteor.user()._id }),
+      routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
       currentUser: Meteor.user(),
+      exercisers: Exercisers.find({}).fetch(),
     }
   }
     return {
-      routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
+
+          routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
       currentUser: Meteor.user(),
+
     }
 
 }, App);

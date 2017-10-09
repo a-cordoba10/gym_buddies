@@ -32,7 +32,8 @@ Meteor.methods({
             weight: exerciser.weight,
             height: exerciser.height,
             interestingIn: exerciser.interestingIn,
-            routines: []
+            routines: [],
+            following: []
         });
     },
     'exercisers.searchByUserName' (id) {
