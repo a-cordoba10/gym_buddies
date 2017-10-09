@@ -27,14 +27,21 @@ class App extends Component {
   }
 
   handleSubmit(event) {
-    // event.preventDefault();
+    event.preventDefault();
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
+    const r = Routines.findOne(this.state.routine._id);
+    this.setState({
+      routine: r,
+    });
     ReactDOM.findDOMNode(this.refs.comment).value = '';
-    
   }
-  addReaction () {
-    
+  addReaction (reaction) {
+    Meteor.call('routines.addReaction', this.state.routine._id, reaction);
+    const r = Routines.findOne(this.state.routine._id);
+    this.setState({
+      routine: r,
+    });
   }
   handleSubmit2(event){
 
@@ -188,10 +195,10 @@ class App extends Component {
               <p>{this.state.routine.name}</p>
               <p>{this.state.routine.username}</p>
               <p>{this.state.routine.purpose}</p>
-              <button onClick={this.addReaction('rat')}>{this.state.routine.reactions.rat}</button>
-              <button onClick={this.addReaction('tiger')}>{this.state.routine.reactions.tiger}</button>
-              <button onClick={this.addReaction('poop')}>{this.state.routine.reactions.poop}</button>
-              <button onClick={this.addReaction('toy')}>{this.state.routine.reactions.toy}</button>
+              <button onClick={()=>this.addReaction('rat')}>{this.state.routine.reactions.rat}</button>
+              <button onClick={()=>this.addReaction('tiger')}>{this.state.routine.reactions.tiger}</button>
+              <button onClick={()=>this.addReaction('poop')}>{this.state.routine.reactions.poop}</button>
+              <button onClick={()=>this.addReaction('toy')}>{this.state.routine.reactions.toy}</button>
               {this.renderComments()}
               {this.props.currentUser ?
                 <form className="new-comment" onSubmit={this.handleSubmit.bind(this)}  >
@@ -302,21 +309,17 @@ export default createContainer(() => {
   Meteor.subscribe('exercisers');
   Meteor.subscribe('routines');
   if (Meteor.user()) {
-
     return {
-
       user: Exercisers.findOne({ userId: Meteor.user()._id }),
       routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
       incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
       currentUser: Meteor.user(),
     }
   }
-  else {
-
     return {
       routines: Routines.find({}, { sort: { createdAt: -1 } }).fetch(),
       incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
       currentUser: Meteor.user(),
     }
-  }
+
 }, App);

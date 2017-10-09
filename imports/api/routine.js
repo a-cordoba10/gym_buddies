@@ -68,11 +68,29 @@ Meteor.methods({
     if (! Meteor.userId()) {
         throw new Meteor.Error('User not log in');
     }
-
-    Routines.update(routineId, { $addToSet: { reactions: reaction }});
-  },
-  'routines.getRoutine'(routineId) {
-    check(routineId, String);
-    return Routines.findOne(routineId);
+    if(reaction === 'toy') {
+      Routines.update(routineId, { $set: {
+        'reactions.toy': routine.reactions.toy+1,
+        } 
+      });
+    }
+    if(reaction === 'tiger') {
+      Routines.update(routineId, { $set: {
+        'reactions.tiger': routine.reactions.tiger+1,
+        } 
+      });
+    }
+    if(reaction === 'rat') {
+      Routines.update(routineId, { $set: {
+        'reactions.rat': routine.reactions.rat+1,
+        } 
+      });
+    }
+    if(reaction === 'poop') {
+      Routines.update(routineId, { $set: {
+        'reactions.poop': routine.reactions.poop+1,
+        } 
+      });
+    }
   },
 });
