@@ -33,7 +33,9 @@ class App extends Component {
     ReactDOM.findDOMNode(this.refs.comment).value = '';
     
   }
-
+  addReaction () {
+    
+  }
   handleSubmit2(event){
 
     event.preventDefault();
