@@ -221,7 +221,8 @@ class App extends Component {
     }
   }
   renderFollowers() {
-    if (Meteor.user()) {
+   
+    if (this.props.user) {
       const li = this.props.user.following;
       return this.props.exercisers.filter(function (elem) {
         for (var i = 0; i < li.length; i++) {
@@ -289,6 +290,12 @@ class App extends Component {
     return ( 
       <div className="container">
         <header>
+        
+          <AccountsUIWrapper />
+          <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" /></h1>
+        <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
+        </header>
+
         {!this.props.user && this.props.currentUser ?
             <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
 
@@ -310,10 +317,6 @@ class App extends Component {
               <button type="submit" >Guardar</button>
             </form> : ''
           }
-          <AccountsUIWrapper />
-          <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" /></h1>
-        <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
-        </header>
         {this.props.currentUser ?
             <button className="addRoutine" onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
           }
@@ -462,12 +465,13 @@ export default createContainer(() => {
       currentUser: Meteor.user(),
       exercisers: Exercisers.find({}).fetch(),
     }
-  }
+  } else {
     return {
 
           routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
       currentUser: Meteor.user(),
 
     }
+  }
 
 }, App);
