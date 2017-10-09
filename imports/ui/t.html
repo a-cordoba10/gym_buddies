@@ -1,0 +1,36 @@
+
+<form name="register">
+
+    <label for="">Name: <input type="text" required></label> 
+    <br>
+    <label for="">Age:<input type="text" required></label> 
+    <br>
+    <label for="">Weight:<input type="number" min="0" required></label> 
+    <br>
+    <label for="">Height: <input type="text" min="0" required></label> 
+    <br>
+    <label for="">Height: <input type="text" min="0" required></label> 
+    <br>
+    <label for="">E-mail: <input type="email" required></label> 
+    <br>
+    <div className="radio">
+        <label>
+          <input type="radio" value="ganarMasaMuscular" checked={true} required/>
+          Ganar masa muscular
+        </label>
+      </div>
+      <div className="radio">
+        <label>
+          <input type="radio" value="perderPeso" />
+          Perder peso
+        </label>
+      </div>
+      <div className="radio">
+        <label>
+          <input type="radio" value="pasatiempo" />
+          Pasatiempo
+        </label>
+      </div>
+    
+      <button ng-click="">Guardar</button>
+</form>
