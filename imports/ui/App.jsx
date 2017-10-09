@@ -215,7 +215,7 @@ class App extends Component {
         return elem.userID == idUser;
       }).map((exer) => {
 
-        return (<div key={exer._id} >   <button onClick={() => this.showRoutine2(exer)}>{exer.name}</button>  </div>);
+        return (<div key={exer._id} >   <button className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>  </div>);
       });
 
     }
@@ -244,8 +244,8 @@ class App extends Component {
 
       return (<div className="routine" key={routine._id}>
         <img src={this.getRandomImg()} className="routineIcon" /> <br />
-        <h3>{routine.name}</h3> <b>by:</b> <h4>{routine.username}</h4>
-        <button onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+        <h3>{routine.name}</h3> <b>by:</b> <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+        <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
     });
   }
@@ -297,15 +297,15 @@ class App extends Component {
         </header>
 
         {!this.props.user && this.props.currentUser ?
-            <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
+            <div className="cmpReg"><h2>Complete your registry!</h2> <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
 
               <label for="name">Name: </label><input name="name" type="text" ref="papapapap" required />
               <br />
-              <label for="age">Age:<input name="age" type="text" ref="age" required /></label>
+              <label for="age">Age:<input name="age" type="number" ref="age" min="0" required /></label>
               <br />
-              <label for="weight">Weight:<input name="weight" type="number" min="0" ref="weight" required /></label>
+              <label for="weight">Weight (Kgs):<input name="weight" type="number" min="0" ref="weight" required /></label>
               <br />
-              <label for="height">Height: <input name="height" type="number" min="0" ref="heightxxx" required /> </label>
+              <label for="height">Height (cms): <input name="height" type="number" min="0" ref="heightxxx" required /> </label>
               <br />
               <label for="email">E-mail: <input name="email" type="email" ref="ccccccc" required /></label>
               <br />
@@ -314,10 +314,10 @@ class App extends Component {
                   <input type="radio" value="Loss weight" name="a" /> Loss weight
                   <input type="radio" value="Hobby" name="a" /> Hobby
              </div>
-              <button type="submit" >Guardar</button>
-            </form> : ''
+              <button className="textBlack" type="submit" >SAVE</button>
+            </form></div> : ''
           }
-        {this.props.currentUser ?
+        {this.props.currentUser && this.props.user ?
             <button className="addRoutine" onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
           }
         <div id="myModal" className="modal">
@@ -328,12 +328,16 @@ class App extends Component {
               <h2>Routine Name:</h2> <h1>{this.state.routine.name}</h1> <br />
               <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
               <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
-              <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
+              { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
               <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
               <button onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button>
+              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button></span> : 
+              <span> <button onClick={()=>this.addReaction('rat')} disabled><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
+              <button onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
+              <button onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
+              <button onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button></span>  }
               </div>
-              {this.props.currentUser ?
+              {this.props.currentUser && this.props.user ?
                 <form className="new-comment" onSubmit={this.handleSubmit.bind(this)}  >
                   <input
                     type="text"
@@ -348,28 +352,24 @@ class App extends Component {
         <div id="myModalUser" className="modal">
           {this.state.selectedUser ?
             <div className="modal-content">
+               <div className="modal-header black">
               <span className="close" onClick={this.closeModalUser.bind(this)}>&times;</span>
-              <label >Name: {this.state.selectedUser.name}</label> <br />
-              <label >Age: {this.state.selectedUser.age}</label><br />
-              <label >E-mail:{this.state.selectedUser.email}</label><br />
-              <label >Weight: {this.state.selectedUser.weight}</label><br />
-              <label >Height: {this.state.selectedUser.height}</label><br />
-              <label >Interesting In: {this.state.selectedUser.interestingIn}</label><br />
+              <h2>Name: </h2><h1>{this.state.selectedUser.name}</h1> <br />
+              <h2>Age:</h2><h1> {this.state.selectedUser.age} years</h1><br />
+              <h2>E-mail:</h2><h1>{this.state.selectedUser.email}</h1><br />
+              <h2>Weight:</h2><h1> {this.state.selectedUser.weight} Kgs</h1><br />
+              <h2>Height:</h2><h1> {this.state.selectedUser.height} cms</h1><br />
+              <h2>Interesting In:</h2><h1> {this.state.selectedUser.interestingIn}</h1><br />
               {this.props.user && this.props.currentUser && !this.imFollowing(this.state.selectedUser._id) ?
                 <button onClick={() => this.follow(this.state.selectedUser)}>Follow</button>
                 : ''
-              }
-              {this.props.user && this.props.currentUser && this.imFollowing(this.state.selectedUser._id) ?
+              }             {this.props.user && this.props.currentUser && this.imFollowing(this.state.selectedUser._id) ?
                 <button onClick={() => this.unfollow(this.state.selectedUser)}>Unfollow</button>
                 : ''
               }
-              <ul>
+              </div>
                 <h1>Routines</h1>
                 {this.renderRoutinesUser(this.state.selectedUser.userId)}
-              </ul>
-
-
-
             </div>
 
             : ''}
@@ -433,13 +433,12 @@ class App extends Component {
           </button>
             {this.renderNewRoutine()}
             </div>
-            {this.state.exercises.length ? <button >ADD ROUTINE</button> : ''}
+            {this.state.exercises.length ? <button>ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
-        <ul>
-          <h1>Following</h1>
+        { this.props.currentUser && this.props.user ? <ul> My follows: 
           {this.renderFollowers()}
-        </ul>
+        </ul> :''}
         <div className="routines">
           {this.renderRoutines()}
         

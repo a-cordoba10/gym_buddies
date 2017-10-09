@@ -102,6 +102,7 @@ input[type=number] {
   box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
   margin: 50px;
   padding: 25px;
+  display: inline-block;
 }
 .routine h3, .routine h4 {
   margin: 0;
@@ -111,13 +112,28 @@ input[type=number] {
 .routineIcon {
   width: 80%;
 }
-.routine button, .exercises button, .modal-content button {
+.openRoutine, .exercises button, .modal-content button, button {
   border: none;
   width: 90%;
   padding: 15px 25px;
   background-color: black;
   color: white;
   transition: all 0.25s;
+}
+.openUser {
+    background-color: white;
+    padding: 5px;
+    border: 1px  solid black;
+    color: black;
+    padding: 15px 25px;
+    margin-bottom: 5px;
+}
+.openUser h4 {
+  margin: 0;
+}
+.openUser:hover {
+  background-color: black;
+  color: white;
 }
 .exercises button {
   margin-top:15px;
@@ -133,7 +149,7 @@ input[type=number] {
   width: auto;
   margin-left: 15px;
 }
-.routine button:hover, .exercises button:hover, .modal-content button:hover { 
+.openRoutine:hover, .exercises button:hover, .modal-content button:hover, button:hover { 
   cursor: pointer;
   background-color: rgb(114, 114, 114);
 }
@@ -260,4 +276,53 @@ header .hide-completed {
 .icontReact {
   width: 15%;
   margin-right: 15px;
+}
+.cmpReg {
+  padding-top: 15px;
+  background-color: black;
+  color: white;
+}
+.cmpReg form {
+  width: 40%;
+  padding: 15px;
+  margin: 0 auto;
+}
+.cmpReg input[type=text], .cmpReg input[type=number], .cmpReg input[type=email] {
+  margin: 0 0 15px 25px;
+  width:200px;
+
+}
+.cmpReg h2 {
+  text-align: center;
+}
+.cmpReg button {
+  background-color: white;
+  border: none;
+  padding: 15px 25px;
+  width: 50%;
+  margin-top: 25px;
+  transition: all 0.25s;
+}
+.cmpReg button:hover {
+  background-color: rgb(218, 218, 218);
+  cursor: pointer;
+}
+.black {
+  background-color: black;
+  color: white;
+}
+.black .close {
+  color: rgb(83, 83, 83);
+}
+.black .close:hover { 
+  color: white;
+}
+#bigButton {
+  background-color: #392de4  !important;
+} 
+.routineButton {
+  margin: 15px;
+}
+.textBlack {
+  color: black;
 }
