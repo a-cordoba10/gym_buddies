@@ -14,14 +14,17 @@ Meteor.methods({
   'routines.insert'(name, purpose, exercises) {
     check(purpose, String);
 
-    if (! this.userId) {
+    // srojas19: sería bueno hacer uso de Meteor.user() para verificar que el usuario esta autenticado
+    if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
 
     Routines.insert({
       name,
-      userID: this.userId,
-      username: Meteor.users.findOne(this.userId).username,
+      // srojas19: usar Meteor.userId()
+      userID: Meteor.userId(),
+      // srojas19: usar Meteor.user()
+      username: Meteor.user().username,
       createdAt: new Date(),
       purpose, 
       comments: [],
@@ -37,8 +40,13 @@ Meteor.methods({
   'routines.remove'(routineId) {
     check(routineId, String);
 
+    // srojas19: sería bueno hacer uso de Meteor.user() para verificar que el usuario esta autenticado
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    // srojas19: cambio por Meteor.userId()
     const routine = Routine.findOne(routineId);
-    if (routine.userID !== this.userId) {
+    if (routine.userID !== Meteor.userId()) {
       throw new Meteor.Error('User can not delete this routine');
     }
     Routines.remove(routineId);
@@ -50,12 +58,13 @@ Meteor.methods({
     const routine = Routines.findOne(routineId);
 
     if (! Meteor.userId()) {
-        throw new Meteor.Error('User not log in');
+        throw new Meteor.Error('User not logged in');
     }
     const newComment = {
-      username: Meteor.users.findOne(this.userId).username,
+      // srojas19: cambio por Meteor.user()
+      username: Meteor.user().username,
       createdAt: new Date(),
-      comment,
+      comment
     }
     Routines.update(routineId, { $addToSet: { comments: newComment }});
   },
@@ -66,7 +75,7 @@ Meteor.methods({
     const routine = Routines.findOne(routineId);
 
     if (! Meteor.userId()) {
-        throw new Meteor.Error('User not log in');
+        throw new Meteor.Error('User not logged in');
     }
     if(reaction === 'toy') {
       Routines.update(routineId, { $set: {
