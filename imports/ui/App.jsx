@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'; //PropTypes tiene un paquete exclusivo, no debería usarse PropTypes desde el paquete react
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
@@ -29,6 +29,8 @@ class App extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    //A la proxima pueden usar la función onChange de los input y mantener el valor de los input en el state en vez de usar refs
+    //Acá se encuentra como implementarlo : https://reactjs.org/docs/forms.html
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
     const r = Routines.findOne(this.state.routine._id);
@@ -79,11 +81,13 @@ class App extends Component {
     const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
     Meteor.call('routines.insert', name, purpose, this.state.exercises);
   }
+  //Esta función no se usa
   addComment() {
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
   }
   getRandomImg() {
+    //Se podría usar const
     var rand = Math.floor(Math.random() * 5);
     if (rand === 1) {
       return './exercise.svg';
@@ -99,11 +103,11 @@ class App extends Component {
     this.setState({
       routine: r,
     });
-
+    //Se podría usar let o const
     var modal = document.getElementById('myModal');
 
     modal.style.display = "block";
-
+    //Genial (Y)
     window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
@@ -112,12 +116,13 @@ class App extends Component {
   }
 
   showRoutine2(r) {
-    this.closeModalUser()
+    this.closeModalUser(); //Faltaba ;
     this.showRoutine(r)
   }
 
 
   closeModal() {
+    //Se podría usar let o const
     var modal = document.getElementById('myModal');
     modal.style.display = "none";
   }
@@ -160,7 +165,7 @@ class App extends Component {
     this.setState({
       selectedUser: x,
     });
-
+    //Se podría usar let o const
     var modal = document.getElementById('myModalUser');
 
     modal.style.display = "block";
@@ -194,7 +199,7 @@ class App extends Component {
 
   imFollowing(idUsuario) {
     const actual = Exercisers.findOne({ userId: Meteor.user()._id });
-
+    //Podrían usar la función .some de los Array
     for (var i = 0; i < actual.following.length; i++) {
       if (actual.following[i].userId == idUsuario)
         return true;
@@ -205,12 +210,13 @@ class App extends Component {
   }
 
   closeModalUser() {
+    //const o let
     var modal = document.getElementById('myModalUser');
     modal.style.display = "none";
   }
   renderRoutinesUser(idUser) {
     if (Meteor.user()) {
-
+      //Muy bien por usar filter y map
       return this.props.routines.filter(function (elem) {
         return elem.userID == idUser;
       }).map((exer) => {
@@ -225,13 +231,14 @@ class App extends Component {
     if (this.props.user) {
       const li = this.props.user.following;
       return this.props.exercisers.filter(function (elem) {
+        //Podrían usar la función find de los Array
         for (var i = 0; i < li.length; i++) {
           if (li[i].userId == elem._id) {
             return elem;
           }
         }
       }).map((exer) => {
-
+        //Muy bien por el uso de la arrow function en el button, de este modo no hay que hacer bind en otro lugar
         return (<div key={exer._id} >   <button onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
       });
 
@@ -243,6 +250,7 @@ class App extends Component {
     return this.props.routines.map((routine) => {
 
       return (<div className="routine" key={routine._id}>
+
         <img src={this.getRandomImg()} className="routineIcon" /> <br />
         <h3>{routine.name}</h3> <b>by:</b> <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
         <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
@@ -272,6 +280,7 @@ class App extends Component {
       </div>)
     });
   }
+  //Para este tipo de cosas podrían usar el paquete moment
   parseDate(date) {
     year = date.getFullYear();
     month = date.getMonth() + 1;
@@ -474,3 +483,4 @@ export default createContainer(() => {
   }
 
 }, App);
+//En general muy bien se nota el trabajo que se le puso al proyecto. Sin embargo, la filosofia de React es contruir apps con componentes, en su caso solo existe App, pudieron haber incluido muchos más componentes para que su proyecto fuera más modular.Por ejemplo, tantos render son sintoma de que pueden usar más componentes.

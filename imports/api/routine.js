@@ -36,8 +36,8 @@ Meteor.methods({
   },
   'routines.remove'(routineId) {
     check(routineId, String);
-
-    const routine = Routine.findOne(routineId);
+    //En la siguiente linea va Routines, no Routine
+    const routine = Routines.findOne(routineId);
     if (routine.userID !== this.userId) {
       throw new Meteor.Error('User can not delete this routine');
     }
@@ -47,7 +47,7 @@ Meteor.methods({
     check(routineId, String);
     check(comment, String);
 
-    const routine = Routines.findOne(routineId);
+    const routine = Routines.findOne(routineId); //No se usa a routine
 
     if (! Meteor.userId()) {
         throw new Meteor.Error('User not log in');
@@ -56,7 +56,8 @@ Meteor.methods({
       username: Meteor.users.findOne(this.userId).username,
       createdAt: new Date(),
       comment,
-    }
+    };
+    //Faltaba ; en la linea superior
     Routines.update(routineId, { $addToSet: { comments: newComment }});
   },
   'routines.addReaction'(routineId, reaction) {

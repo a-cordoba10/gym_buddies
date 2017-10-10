@@ -1,5 +1,6 @@
 /* CSS declarations go here */
 body {
+
   font-family: 'Muli', sans-serif;
   background-color: white;
   color: black;
@@ -54,6 +55,7 @@ header {
 .newRoutine {
   display: inline-block;
   width: 60%;
+  /*cuando se usa 0 no es necesario especificar la unidad*/
   box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
   margin: 2vh 0;
   padding-bottom: 5vh;
@@ -125,6 +127,7 @@ input[type=number] {
     padding: 5px;
     border: 1px  solid black;
     color: black;
+  /*Hay dos declaraciones de padding, podría ser solo una*/
     padding: 15px 25px;
     margin-bottom: 5px;
 }
