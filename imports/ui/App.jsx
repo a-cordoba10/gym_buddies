@@ -1,3 +1,9 @@
+/*
+srojas19: Observacion general: Se debería separar en componentes, pues hace más legible el código, 
+y es una de las fortalezas de usar React
+Probablemente puedan salir como 5 componentes de aqui
+*/
+
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
