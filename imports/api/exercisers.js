@@ -40,6 +40,7 @@ Meteor.methods({
 
         console.log(id);
         if (!id) {
+            //Luis Plazas: buen uso
             throw new Meteor.Error('not-authorized');
         }
 
