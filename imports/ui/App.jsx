@@ -104,6 +104,7 @@ class App extends Component {
 
     modal.style.display = "block";
 
+    //Luis Plazas: Se pudieron haber usado funciones y bindings de ES6
     window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
@@ -194,7 +195,7 @@ class App extends Component {
 
   imFollowing(idUsuario) {
     const actual = Exercisers.findOne({ userId: Meteor.user()._id });
-
+    //Luis Plazas: Si se busca sólo uno, no habría necesidad de iterar sobre las respuestas.
     for (var i = 0; i < actual.following.length; i++) {
       if (actual.following[i].userId == idUsuario)
         return true;
@@ -249,6 +250,7 @@ class App extends Component {
       </div>);
     });
   }
+  //Luis Plazas:  Cuando se crean nuevos elementos sobre una función iterativa, es importante poner un key sobre cada nuevo elemento creado.
   renderNewRoutine() {
     if (this.state.exercises.length > 0) {
       return this.state.exercises.map((exercise, key) => {
@@ -263,6 +265,7 @@ class App extends Component {
     }
     return (<div> <br /> Add some exercises to your routine! </div>);
   }
+  //Luis Plazas: Cuando se crean nuevos elementos sobre una función iterativa, es importante poner un key sobre cada nuevo elemento creado.
   renderComments() {
     return this.state.routine.comments.map((comment) => {
       return (<div className="comment">
@@ -272,6 +275,7 @@ class App extends Component {
       </div>)
     });
   }
+  //Luis Plazas: Cuando se crean nuevos elementos sobre una función iterativa, es importante poner un key sobre cada nuevo elemento creado.
   renderCurrentExercises() {
     return this.state.routine.exercises.map((exercise, key) => {
       return (<div className="exercise">
@@ -465,6 +469,7 @@ App.propTypes = {
           user: PropTypes.object,
   currentUser: PropTypes.object,
 };
+
 
 export default createContainer(() => {
           Meteor.subscribe('exercisers');
