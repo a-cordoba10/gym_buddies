@@ -42,7 +42,7 @@ Meteor.methods({
         if (!id) {
             throw new Meteor.Error('not-authorized');
         }
-
+        //Se encuentra quemado el id de un usuario ?
         return Exercisers.findOne({
             userId: 'sdfsfdf'
         });
