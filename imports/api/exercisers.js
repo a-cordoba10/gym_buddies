@@ -1,12 +1,7 @@
-import {
-    Meteor
-} from 'meteor/meteor';
-import {
-    Mongo
-} from 'meteor/mongo';
-import {
-    check
-} from 'meteor/check';
+/* srojas19: indentancion extraña en imports */
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { check } from 'meteor/check';
 
 export const Exercisers = new Mongo.Collection('exercisers');
 
@@ -20,12 +15,14 @@ Meteor.methods({
     'exercisers.insert' (exerciser) {
         check(exerciser, Object);
 
-        if (!this.userId) {
+        // srojas19: sería bueno hacer uso de Meteor.user() para verificar que el usuario esta autenticado
+        if (! Meteor.userId()) {
             throw new Meteor.Error('not-authorized');
         }
         Exercisers.insert({
-            username: Meteor.users.findOne(this.userId).username,
-            userId: exerciser.userId,
+            // srojas19: Usar Meteor.user().username y Meteor.userId(), pues es mas seguro
+            username: Meteor.user().username,
+            userId: Meteor.userId(),
             email: exerciser.email,
             name: exerciser.name,
             age: exerciser.age,
@@ -37,12 +34,12 @@ Meteor.methods({
         });
     },
     'exercisers.searchByUserName' (id) {
-
-        console.log(id);
-        if (!id) {
+        // srojas19: console.log innecesario
+        // srojas19: sería bueno hacer uso de Meteor.user() para verificar que el usuario esta autenticado
+        if (! Meteor.userId()) {
             throw new Meteor.Error('not-authorized');
         }
-
+        // srojas19: mal implementado (?)
         return Exercisers.findOne({
             userId: 'sdfsfdf'
         });
