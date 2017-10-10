@@ -272,6 +272,16 @@ class App extends Component {
       </div>)
     });
   }
+  renderCurrentExercises() {
+    return this.state.routine.exercises.map((exercise, key) => {
+      return (<div className="exercise">
+        <b>Name:</b> {exercise.name}  &nbsp;
+        <b>Series:</b>{exercise.series} &nbsp;
+        <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
+        <b>Rest Time:</b> {exercise.restTime}
+      </div>)
+    });
+  }
   parseDate(date) {
     year = date.getFullYear();
     month = date.getMonth() + 1;
@@ -336,6 +346,8 @@ class App extends Component {
               <button onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
               <button onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
               <button onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button></span>  }
+              
+              {this.renderCurrentExercises()}
               </div>
               {this.props.currentUser && this.props.user ?
                 <form className="new-comment" onSubmit={this.handleSubmit.bind(this)}  >
