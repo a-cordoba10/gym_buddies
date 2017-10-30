@@ -1,4 +1,7 @@
 /* CSS declarations go here */
+html {
+  overflow-x: hidden;
+}
 body {
   font-family: 'Muli', sans-serif;
   background-color: white;
@@ -95,6 +98,9 @@ input[type=text], input[type=number] {
 #login-buttons {
   display: block;
 }
+.hidden{
+  visibility:hidden;
+}
 .routine {
   width: 200px;
   height: auto;
@@ -158,9 +164,19 @@ input[type=text], input[type=number] {
 h1 {
   text-align: left;
   font-weight: 900;
-  font-size: 6em;
+  font-size: 1.5em;
   margin: 0;
   margin-top: 5vh;
+}
+@media only screen and (min-width: 355px) {
+  h1 {
+    font-size: 3em;
+  }
+}
+@media only screen and (min-width: 710px) {
+  h1 {
+    font-size: 6em;
+  }
 }
 h2 {
   font-weight: 300;

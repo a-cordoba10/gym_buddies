@@ -291,7 +291,7 @@ class App extends Component {
     return this.props.routines.map((routine) => {
 
       return (<div className="routine" key={routine._id}>
-        <img src={this.getRandomImg()} className="routineIcon" /> <br />
+        <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
         <h3>{routine.name}</h3> <br /> <b>Duration(s):</b>{routine.duration} <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
         <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
@@ -352,7 +352,7 @@ class App extends Component {
         <header>
         
           <AccountsUIWrapper />
-          <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" /></h1>
+          <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" alt="Wight Lifting Image" /></h1>
         <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
         </header>
 
@@ -389,24 +389,26 @@ class App extends Component {
               <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
               <h2>Duration (s): </h2> <h1>{this.state.routine.duration}</h1> <br />
               <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
-              { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
-              <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
-              <button onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button></span> : 
-              <span> <button onClick={()=>this.addReaction('rat')} disabled><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
-              <button onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
-              <button onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" />{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" />{this.state.routine.reactions.toy}</button></span>  }
+              { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
+              <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
+              <button onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'"/>{this.state.routine.reactions.poop}</button>
+              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'" />{this.state.routine.reactions.toy}</button></span> : 
+              <span> <button onClick={()=>this.addReaction('rat')} disabled><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
+              <button onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
+              <button onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'" />{this.state.routine.reactions.poop}</button>
+              <button onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'"  />{this.state.routine.reactions.toy}</button></span>  }
               
               {this.renderCurrentExercises()}
               </div>
               {this.props.currentUser && this.props.user ?
                 <form className="new-comment" onSubmit={this.handleSubmit.bind(this)}  >
-                  <input
+                 <label for="comment" className="hidden">Comment:</label> <input
                     type="text"
                     ref="comment"
+                    name="comment"
                     placeholder="Type to add a new comment"
-                  /><button>SEND</button>
+                    aria-label="New comment input"
+                  /><button aria-label="Send new comment">SEND</button>
                 </form> : ''}
                 {this.renderComments()}
             </div>
@@ -447,6 +449,7 @@ class App extends Component {
               name="name"
               type="text"
               ref="name"
+              aria-label="Name of your routine"
               placeholder="The name of your routine"
             /> <br />
             <label for="purpose">Purpose</label><input
@@ -454,6 +457,7 @@ class App extends Component {
               name="purpose"
               type="text"
               ref="purpose"
+              aria-label="Purpose of your routine"
               placeholder="The purpose of your routine"
             /> <br />
             <div className="exercises">
@@ -463,6 +467,7 @@ class App extends Component {
               name="exercise"
               type="text"
               ref="exercise"
+              aria-label="Name of your exercise"
               placeholder="Name of the exercise"
             /> <br/>
             <label for="duration">Duration (s)</label>
@@ -471,6 +476,7 @@ class App extends Component {
               type="number"
               min="1"
               ref="duration"
+              aria-label="Duration of your exercise"
               placeholder="Duration of each exercise"
             /> <br />
             <label for="series">Series</label>
@@ -479,6 +485,7 @@ class App extends Component {
               type="number"
               min="1"
               ref="series"
+              aria-label="Number of series of your exercise"
               placeholder="Number of series"
             /> <br />
             <label for="repetitions">Repetitions</label>
@@ -487,10 +494,12 @@ class App extends Component {
               type="number"
               min="1"
               ref="repetitions"
+              aria-label="Number of repetitions of your exercise"
               placeholder="Number of repetitions"
             /> <br />
             <label for="restTime">Rest Time (s)</label>
             <input
+              aria-label="Rest time of your exercise"
               name="restTime"
               type="number"
               min="1"
@@ -498,6 +507,7 @@ class App extends Component {
               placeholder="Rest time between series"
             /> <br />
             <button
+              aria-label="Add an exercise to your routine"
               type="button"
               onClick={this.addExercise.bind(this)}>
               ADD EXERCISE
@@ -507,9 +517,9 @@ class App extends Component {
             {this.state.exercises.length ? <button>ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
-        { this.props.currentUser && this.props.user ? <ul> My follows: 
+        { this.props.currentUser && this.props.user ? <span> <br /> My follows: <ul>  
           {this.renderFollowers()}
-        </ul> :''}
+        </ul></span> :''}
         <div className="routines">
           {this.renderRoutines()}
         
