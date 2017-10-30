@@ -11,7 +11,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'routines.insert'(name, purpose, exercises) {
+  'routines.insert'(name, purpose, duration, exercises) {
     check(purpose, String);
 
     if (!this.userId) {
@@ -24,6 +24,7 @@ Meteor.methods({
       username: Meteor.users.findOne(this.userId).username,
       createdAt: new Date(),
       purpose,
+      duration,
       comments: [],
       userReactions: [],
       reactions: {

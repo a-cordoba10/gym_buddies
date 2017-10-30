@@ -77,14 +77,18 @@ class App extends Component {
   addRoutine() {
     const purpose = ReactDOM.findDOMNode(this.refs.purpose).value.trim();
     const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
-    Meteor.call('routines.insert', name, purpose, this.state.exercises);
+    let duration = 0;
+    for(i=0; i<this.state.exercises.length; i++) {
+      duration += parseInt(this.state.exercises[i].duration) + (parseInt(this.state.exercises[i].restTime)*(parseInt(this.state.exercises[i].repetitions)-1));
+    }
+    Meteor.call('routines.insert', name, purpose, duration, this.state.exercises);
   }
   addComment() {
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
   }
   getRandomImg() {
-    var rand = Math.floor(Math.random() * 5);
+    const rand = Math.floor(Math.random() * 5);
     if (rand === 1) {
       return './exercise.svg';
     } else if (rand === 2) {
@@ -100,7 +104,7 @@ class App extends Component {
       routine: r,
     });
 
-    var modal = document.getElementById('myModal');
+    const modal = document.getElementById('myModal');
 
     modal.style.display = "block";
 
@@ -118,7 +122,7 @@ class App extends Component {
 
 
   closeModal() {
-    var modal = document.getElementById('myModal');
+    const modal = document.getElementById('myModal');
     modal.style.display = "none";
   }
   addExercise() {
@@ -126,9 +130,11 @@ class App extends Component {
     const series = ReactDOM.findDOMNode(this.refs.series).value.trim();
     const repetitions = ReactDOM.findDOMNode(this.refs.repetitions).value.trim();
     const restTime = ReactDOM.findDOMNode(this.refs.restTime).value.trim();
-    if (name !== '' && series !== '' && repetitions !== '' && restTime !== '') {
+    const duration = ReactDOM.findDOMNode(this.refs.duration).value.trim();
+    if (name !== '' && (series !== '' && series > 0) && (repetitions !== '' && repetitions >0) && (restTime !== ''&& restTime >0)) {
       const newExercise = {
         name,
+        duration,
         series,
         repetitions,
         restTime,
@@ -140,9 +146,51 @@ class App extends Component {
         formError: '',
       });
     } else {
-      this.setState({
-        formError: 'Some fields are missing',
-      });
+      if (name === '' ) {
+        this.setState({
+          formError: 'Name your exercise!',
+        });
+      }
+      else if (duration === '') {
+        this.setState({
+          formError: 'Your exercise needs duration time!',
+        });
+      }
+      else if (duration < 1) {
+        this.setState({
+          formError: 'Duration of exercises must be 1 or more!',
+        });
+      }
+      else if (series === '') {
+        this.setState({
+          formError: 'Your exercise needs a number of series!',
+        });
+      }
+      else if (series < 1) {
+        this.setState({
+          formError: 'Number of series must be 1 or more!',
+        });
+      }
+      else if (repetitions === '') {
+        this.setState({
+          formError: 'Your exercise needs a number of repetitions!',
+        });
+      }
+      else if (repetitions < 1) {
+        this.setState({
+          formError: 'Number of repetitions must be 1 or more!',
+        });
+      }
+      else if (restTime === '') {
+        this.setState({
+          formError: 'Your exercise needs a rest time!',
+        });
+      }
+      else if (restTime < 1) {
+        this.setState({
+          formError: 'Rest time must be 1 or more!',
+        });
+      }
     }
   }
   deleteExercise(key) {
@@ -161,7 +209,7 @@ class App extends Component {
       selectedUser: x,
     });
 
-    var modal = document.getElementById('myModalUser');
+    const modal = document.getElementById('myModalUser');
 
     modal.style.display = "block";
 
@@ -182,7 +230,7 @@ class App extends Component {
 
 
     const actual = Exercisers.findOne({ userId: Meteor.user()._id });
-    for (var i = 0; i < actual.following.length; i++) {
+    for (i = 0; i < actual.following.length; i++) {
       if (actual.following[i].userId == obj._id) {
         console.log('entra');
         actual.following.splice(i, 1);
@@ -195,7 +243,7 @@ class App extends Component {
   imFollowing(idUsuario) {
     const actual = Exercisers.findOne({ userId: Meteor.user()._id });
 
-    for (var i = 0; i < actual.following.length; i++) {
+    for ( i = 0; i < actual.following.length; i++) {
       if (actual.following[i].userId == idUsuario)
         return true;
     }
@@ -205,7 +253,7 @@ class App extends Component {
   }
 
   closeModalUser() {
-    var modal = document.getElementById('myModalUser');
+    const modal = document.getElementById('myModalUser');
     modal.style.display = "none";
   }
   renderRoutinesUser(idUser) {
@@ -215,7 +263,7 @@ class App extends Component {
         return elem.userID == idUser;
       }).map((exer) => {
 
-        return (<div key={exer._id} >   <button className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>  </div>);
+        return (<button key={exer._id} className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>);
       });
 
     }
@@ -225,7 +273,7 @@ class App extends Component {
     if (this.props.user) {
       const li = this.props.user.following;
       return this.props.exercisers.filter(function (elem) {
-        for (var i = 0; i < li.length; i++) {
+        for (i = 0; i < li.length; i++) {
           if (li[i].userId == elem._id) {
             return elem;
           }
@@ -244,7 +292,7 @@ class App extends Component {
 
       return (<div className="routine" key={routine._id}>
         <img src={this.getRandomImg()} className="routineIcon" /> <br />
-        <h3>{routine.name}</h3> <b>by:</b> <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+        <h3>{routine.name}</h3> <br /> <b>Duration(s):</b>{routine.duration} <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
         <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
     });
@@ -254,6 +302,7 @@ class App extends Component {
       return this.state.exercises.map((exercise, key) => {
         return (<div className="exercise">
           <b>Name:</b> {exercise.name}  &nbsp;
+          <b>Duration(s):</b> {exercise.duration}  &nbsp;
           <b>Series:</b>{exercise.series} &nbsp;
           <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
           <b>Rest Time:</b> {exercise.restTime}
@@ -276,6 +325,7 @@ class App extends Component {
     return this.state.routine.exercises.map((exercise, key) => {
       return (<div className="exercise">
         <b>Name:</b> {exercise.name}  &nbsp;
+        <b>Duration(s):</b> {exercise.duration}  &nbsp;
         <b>Series:</b>{exercise.series} &nbsp;
         <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
         <b>Rest Time:</b> {exercise.restTime}
@@ -337,6 +387,7 @@ class App extends Component {
               <span className="close" onClick={this.closeModal.bind(this)}>&times;</span>
               <h2>Routine Name:</h2> <h1>{this.state.routine.name}</h1> <br />
               <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
+              <h2>Duration (s): </h2> <h1>{this.state.routine.duration}</h1> <br />
               <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
               { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" />{this.state.routine.reactions.rat}</button>
               <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" />{this.state.routine.reactions.tiger}</button>
@@ -414,6 +465,14 @@ class App extends Component {
               ref="exercise"
               placeholder="Name of the exercise"
             /> <br/>
+            <label for="duration">Duration (s)</label>
+            <input
+              name="duration"
+              type="number"
+              min="1"
+              ref="duration"
+              placeholder="Duration of each exercise"
+            /> <br />
             <label for="series">Series</label>
             <input
               name="series"
