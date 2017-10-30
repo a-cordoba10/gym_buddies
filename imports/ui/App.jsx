@@ -292,7 +292,7 @@ class App extends Component {
 
       return (<div className="routine" key={routine._id}>
         <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
-        <h3>{routine.name}</h3> <br /> <b>Duration(s):</b>{routine.duration} <button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+        <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration} s<button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
         <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
     });
@@ -302,10 +302,10 @@ class App extends Component {
       return this.state.exercises.map((exercise, key) => {
         return (<div className="exercise">
           <b>Name:</b> {exercise.name}  &nbsp;
-          <b>Duration(s):</b> {exercise.duration}  &nbsp;
+          <b>Duration:</b> {exercise.duration} s  &nbsp;
           <b>Series:</b>{exercise.series} &nbsp;
           <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
-          <b>Rest Time:</b> {exercise.restTime}
+          <b>Rest Time:</b> {exercise.restTime} s
           <button type="button" onClick={() => this.deleteExercise(key)}>DELETE</button>
         </div>)
       });
@@ -325,10 +325,10 @@ class App extends Component {
     return this.state.routine.exercises.map((exercise, key) => {
       return (<div className="exercise">
         <b>Name:</b> {exercise.name}  &nbsp;
-        <b>Duration(s):</b> {exercise.duration}  &nbsp;
+        <b>Duration:</b> {exercise.duration}s  &nbsp;
         <b>Series:</b>{exercise.series} &nbsp;
         <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
-        <b>Rest Time:</b> {exercise.restTime}
+        <b>Rest Time:</b> {exercise.restTime} s
       </div>)
     });
   }
@@ -387,7 +387,7 @@ class App extends Component {
               <span className="close" onClick={this.closeModal.bind(this)}>&times;</span>
               <h2>Routine Name:</h2> <h1>{this.state.routine.name}</h1> <br />
               <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
-              <h2>Duration (s): </h2> <h1>{this.state.routine.duration}</h1> <br />
+              <h2>Total Duration: </h2> <h1>{this.state.routine.duration} s</h1> <br />
               <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
               { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
               <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
@@ -470,7 +470,7 @@ class App extends Component {
               aria-label="Name of your exercise"
               placeholder="Name of the exercise"
             /> <br/>
-            <label for="duration">Duration (s)</label>
+            <label for="duration">Duration (sec)</label>
             <input
               name="duration"
               type="number"
