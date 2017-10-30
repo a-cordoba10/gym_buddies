@@ -263,7 +263,7 @@ class App extends Component {
         return elem.userID == idUser;
       }).map((exer) => {
 
-        return (<button key={exer._id} className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>);
+        return (<button key={exer._id} aria-label="See this routine" className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>);
       });
 
     }
@@ -280,7 +280,7 @@ class App extends Component {
         }
       }).map((exer) => {
 
-        return (<div key={exer._id} >   <button onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
+        return (<div key={exer._id} >   <button aria-label="See this person that you're following" onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
       });
 
     }
@@ -292,8 +292,8 @@ class App extends Component {
 
       return (<div className="routine" key={routine._id}>
         <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
-        <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration} s<button className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
-        <button className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+        <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+        <button aria-label="See this routine" className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
       </div>);
     });
   }
@@ -306,7 +306,7 @@ class App extends Component {
           <b>Series:</b>{exercise.series} &nbsp;
           <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
           <b>Rest Time:</b> {exercise.restTime} s
-          <button type="button" onClick={() => this.deleteExercise(key)}>DELETE</button>
+          <button aria-label="Delete exercise from routine" type="button" onClick={() => this.deleteExercise(key)}>DELETE</button>
         </div>)
       });
     }
@@ -359,26 +359,26 @@ class App extends Component {
         {!this.props.user && this.props.currentUser ?
             <div className="cmpReg"><h2>Complete your registry!</h2> <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
 
-              <label for="name">Name: </label><input name="name" type="text" ref="papapapap" required />
+              <label for="name">Name: </label><input name="name" type="text" ref="papapapap" aria-label="Your name" required />
               <br />
-              <label for="age">Age:<input name="age" type="number" ref="age" min="0" required /></label>
+              <label for="age">Age:<input name="age" type="number" ref="age" min="0" aria-label="Your age" required /></label>
               <br />
-              <label for="weight">Weight (Kgs):<input name="weight" type="number" min="0" ref="weight" required /></label>
+              <label for="weight">Weight (Kgs):<input name="weight" type="number" min="0" ref="weight" aria-label="Your weight" required /></label>
               <br />
-              <label for="height">Height (cms): <input name="height" type="number" min="0" ref="heightxxx" required /> </label>
+              <label for="height">Height (cms): <input name="height" type="number" min="0" ref="heightxxx" aria-label="Your height" required /> </label>
               <br />
-              <label for="email">E-mail: <input name="email" type="email" ref="ccccccc" required /></label>
+              <label for="email">E-mail: <input name="email" type="email" ref="ccccccc" aria-label="Your e-mail" required /></label>
               <br />
               <div onChange={this.setInteresting.bind(this)}>
-                <input type="radio" value="Gain Mass" name="a" required /> Gain Mass
-                  <input type="radio" value="Loss weight" name="a" /> Loss weight
-                  <input type="radio" value="Hobby" name="a" /> Hobby
+                <input type="radio" value="Gain Mass" name="a" required aria-label="Your purpose: Gain mass" /> Gain Mass
+                  <input type="radio" value="Loss weight" name="a" aria-label="Your purpose: Loss weight"  /> Loss weight
+                  <input type="radio" value="Hobby" name="a" aria-label="Your purpose: Hobby"  /> Hobby
              </div>
-              <button className="textBlack" type="submit" >SAVE</button>
+              <button className="textBlack" type="submit" aria-label="Save profile" >SAVE</button>
             </form></div> : ''
           }
         {this.props.currentUser && this.props.user ?
-            <button className="addRoutine" onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
+            <button className="addRoutine" aria-label="Add a new routine"  onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
           }
         <div id="myModal" className="modal">
           {this.state.routine ?
@@ -389,14 +389,14 @@ class App extends Component {
               <h2>by:</h2> <h1>{this.state.routine.username}</h1> <br />
               <h2>Total Duration: </h2> <h1>{this.state.routine.duration} s</h1> <br />
               <h2>Purpose:</h2> <h1>{this.state.routine.purpose}</h1> <br />
-              { this.props.currentUser && this.props.user ? <span> <button onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
-              <button onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
-              <button onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'"/>{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'" />{this.state.routine.reactions.toy}</button></span> : 
-              <span> <button onClick={()=>this.addReaction('rat')} disabled><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
-              <button onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
-              <button onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'" />{this.state.routine.reactions.poop}</button>
-              <button onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'"  />{this.state.routine.reactions.toy}</button></span>  }
+              { this.props.currentUser && this.props.user ? <span> <button aria-label="Add weight lifting reaction to this routine"  onClick={()=>this.addReaction('rat')}><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
+              <button aria-label="Add tiger reaction to this routine"  onClick={()=>this.addReaction('tiger')}><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
+              <button aria-label="Add broken heart reaction to this routine"  onClick={()=>this.addReaction('poop')}><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'"/>{this.state.routine.reactions.poop}</button>
+              <button aria-label="Add poop reaction to this routine"  onClick={()=>this.addReaction('toy')}><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'" />{this.state.routine.reactions.toy}</button></span> : 
+              <span> <button aria-label="Add weight lifting reaction to this routine"  onClick={()=>this.addReaction('rat')} disabled><img src="./dumbbell.svg" className="icontReact" alt="Add reaction: 'Strong routine!'" />{this.state.routine.reactions.rat}</button>
+              <button aria-label="Add tiger reaction to this routine"  onClick={()=>this.addReaction('tiger')} disabled><img src="./tiger.svg" className="icontReact" alt="Add reaction: 'Good one tiger!'" />{this.state.routine.reactions.tiger}</button>
+              <button aria-label="Add broken heart reaction to this routine"  onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'" />{this.state.routine.reactions.poop}</button>
+              <button aria-label="Add poop reaction to this routine"  onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'"  />{this.state.routine.reactions.toy}</button></span>  }
               
               {this.renderCurrentExercises()}
               </div>
@@ -426,10 +426,10 @@ class App extends Component {
               <h2>Height:</h2><h1> {this.state.selectedUser.height} cms</h1><br />
               <h2>Interesting In:</h2><h1> {this.state.selectedUser.interestingIn}</h1><br />
               {this.props.user && this.props.currentUser && !this.imFollowing(this.state.selectedUser._id) ?
-                <button onClick={() => this.follow(this.state.selectedUser)}>Follow</button>
+                <button aria-label="Follow this user"  onClick={() => this.follow(this.state.selectedUser)}>Follow</button>
                 : ''
               }             {this.props.user && this.props.currentUser && this.imFollowing(this.state.selectedUser._id) ?
-                <button onClick={() => this.unfollow(this.state.selectedUser)}>Unfollow</button>
+                <button aria-label="Unfollow this user"  onClick={() => this.unfollow(this.state.selectedUser)}>Unfollow</button>
                 : ''
               }
               </div>
@@ -514,7 +514,7 @@ class App extends Component {
           </button>
             {this.renderNewRoutine()}
             </div>
-            {this.state.exercises.length ? <button>ADD ROUTINE</button> : ''}
+            {this.state.exercises.length ? <button aria-label="Add a new routine" >ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
         { this.props.currentUser && this.props.user ? <span> <br /> My follows: <ul>  
