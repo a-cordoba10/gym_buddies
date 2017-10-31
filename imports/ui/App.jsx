@@ -8,13 +8,16 @@ import { Routines } from '../api/routine.js';
 
 
 import AccountsUIWrapper from './AccountsUIWrapper.jsx';
+// Lady Pinzon: Deberian haber descompuesto su proyecto en mas componentes de react.
 
-
+// Lady Pinzon: Esta bien que coloquen el comentario que esta a continuación, aclara que este es el componente principal.
 // App component - represents the whole app
+
+// Lady Pinzon: Buen manejo de constructores
 class App extends Component {
   constructor(props) {
     super(props);
-
+// Lady Pinzon: Buen manejo de los estados
     this.state = {
       hideCompleted: false,
       showRoutineForm: false,
@@ -25,15 +28,17 @@ class App extends Component {
       selectedUser: {},
       search: '',
     };
-
+// Lady Pinzon: Se hace adecuadamente el bind
     this.searchChange = this.searchChange.bind(this);
   }
 
   handleSubmit(event) {
     event.preventDefault();
+    // Lady Pinzon: Esta muy bien definir const o let, en este caso const y no var como lo tenian en algunas veces en la pasada entrega
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
     const r = Routines.findOne(this.state.routine._id);
+    // Lady Pinzon: Uso adeacuado de estado, se cambia el valor de este adecuadamente
     this.setState({
       routine: r,
     });
@@ -41,6 +46,7 @@ class App extends Component {
   }
   addReaction(reaction) {
     Meteor.call('routines.addReaction', this.state.routine._id, reaction);
+    // Lady Pinzon: Esta muy bien definir const o let, en este caso const y no var como lo tenian en algunas veces en la pasada entrega
     const r = Routines.findOne(this.state.routine._id);
     this.setState({
       routine: r,
@@ -49,6 +55,7 @@ class App extends Component {
   handleSubmit2(event) {
 
     event.preventDefault();
+    // Lady Pinzon: Esta muy bien definir const o let, en este caso const y no var como lo tenian en algunas veces en la pasada entrega
     const temp = {
       name: ReactDOM.findDOMNode(this.refs.papapapap).value.trim(),
       age: ReactDOM.findDOMNode(this.refs.age).value.trim(),
@@ -61,7 +68,7 @@ class App extends Component {
       following: [],
 
     }
-
+// Lady Pinzon: Ya como se hizo la entrega definitiva del proyecto y deberia estar funcionando, se deberia dejar de imprimir en conola estos valores.
     console.log(JSON.stringify(temp));
     Meteor.call('exercisers.insert', temp);
   }
@@ -87,6 +94,7 @@ class App extends Component {
   addRoutine() {
     const purpose = ReactDOM.findDOMNode(this.refs.purpose).value.trim();
     const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    // Lady Pinzon: Esta muy bien definir const o let, en este caso let y no var como lo tenian en algunas veces en la pasada entrega
     let duration = 0;
     for(i=0; i<this.state.exercises.length; i++) {
       duration += parseInt(this.state.exercises[i].duration) + (parseInt(this.state.exercises[i].restTime)*(parseInt(this.state.exercises[i].repetitions)-1));
