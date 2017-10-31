@@ -1,3 +1,6 @@
+//srojas19: Nuevamente, se debe separar la aplicacion en varios componentes, en vez de amontonar todo en uno
+// En general, buen uso de aria-label y alt en los elementos de la pagina
+
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
@@ -50,6 +53,7 @@ class App extends Component {
 
     event.preventDefault();
     const temp = {
+      /*srojas19: Mejorar el nombre de los elementos en la forma */
       name: ReactDOM.findDOMNode(this.refs.papapapap).value.trim(),
       age: ReactDOM.findDOMNode(this.refs.age).value.trim(),
       weight: ReactDOM.findDOMNode(this.refs.weight).value.trim(),
@@ -233,6 +237,7 @@ class App extends Component {
   follow(obj) {
     const actual = Exercisers.findOne({ userId: Meteor.user()._id });
     actual.following.push({ userId: obj._id, name: obj.name });
+    // srojas19: Inseguro, usar Meteor.call()
     Exercisers.update({ _id: actual._id }, actual);
   }
 
@@ -247,6 +252,7 @@ class App extends Component {
         break;
       }
     }
+    // srojas19: Inseguro, usar Meteor.call()
     Exercisers.update({ _id: actual._id }, actual);
   }
 
@@ -289,7 +295,7 @@ class App extends Component {
           }
         }
       }).map((exer) => {
-
+// srojas19: Buen uso de aria-label
         return (<div key={exer._id} >   <button aria-label="See this person that you're following" onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
       });
 
@@ -301,7 +307,7 @@ class App extends Component {
     const currentSearch = this.state.search.toUpperCase();
     if(currentSearch === '') {
       return this.props.routines.map((routine) => {
-        
+        // srojas19: Buen uso de alt para imagenes y aria-label en botones
               return (<div className="routine" key={routine._id}>
                 <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
                 <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
@@ -311,7 +317,7 @@ class App extends Component {
     }
     else {
       return this.props.routines.filter(function(routineFilter){return routineFilter.name.toUpperCase().includes(currentSearch);}).map((routine) => {
-        
+         // srojas19: Buen uso de alt para imagenes y aria-label en botones
               return (<div className="routine" key={routine._id}>
                 <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
                 <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
