@@ -1,3 +1,6 @@
+//srojas19: En general, se verifica que el usuario tenga permiso para agregar y modificar en los metodos pertinentes
+// y se verifica que el usuario este autenticado cuando sea necesario.
+
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
