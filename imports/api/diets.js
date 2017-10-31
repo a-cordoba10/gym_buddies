@@ -45,9 +45,9 @@ Meteor.methods({
     }
     Diets.remove(dietID);
   },
-  'diets.addComment'(dietId, comment) {
+  'diets.addComment'(dietId, commentt) {
     check(dietId, String);
-    check(comment, String);
+    check(commentt, String);
 
     const diet = Diets.findOne(dietId);
 
@@ -57,7 +57,7 @@ Meteor.methods({
     const newComment = {
       username: Meteor.users.findOne(this.userId).username,
       createdAt: new Date(),
-      comment,
+      comment: commentt,
     }
     Diets.update(dietId, { $addToSet: { comments: newComment } });
   },

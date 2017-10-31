@@ -41,6 +41,17 @@ class App extends Component {
     });
     ReactDOM.findDOMNode(this.refs.comment).value = '';
   }
+
+  handleSubmitDiet(event) {
+    event.preventDefault();
+    const comment = ReactDOM.findDOMNode(this.refs.comment2).value.trim();
+    Meteor.call('diets.addComment', this.state.diet._id, comment);
+    const r = Diets.findOne(this.state.diet._id);
+    this.setState({
+      diet: r,
+    });
+    ReactDOM.findDOMNode(this.refs.comment2).value = '';
+  }
   addReaction(reaction) {
     Meteor.call('routines.addReaction', this.state.routine._id, reaction);
     const r = Routines.findOne(this.state.routine._id);
@@ -91,21 +102,9 @@ class App extends Component {
       showDietForm: !this.state.showDietForm,
     });
   }
-  addDiet() { 
-    console.log("llega");
-    const purpose = ReactDOM.findDOMNode(this.refs.purpose2).value.trim();
-    const name = ReactDOM.findDOMNode(this.refs.name2).value.trim();
-    console.log("purpose:" + purpose);
-    console.log("name:" + name);
-    let calories = 0;
-    for(i=0; i<this.state.days.length; i++) {
-      calories += parseInt(this.state.days[i].calories);
-    }
-    Meteor.call('diets.insert', name, purpose, calories, this.state.days);
-  }
+  
   
   addRoutine() {
-
     const purpose = ReactDOM.findDOMNode(this.refs.purpose).value.trim();
     const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
     let duration = 0;
@@ -225,6 +224,23 @@ class App extends Component {
     }
   }
 
+  showDiet(r) {
+    
+        this.setState({
+          diet: r,
+        });
+    
+        const modal = document.getElementById('myModalDiet');
+    
+        modal.style.display = "block";
+    
+        window.onclick = function (event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+      }
+
   showRoutine2(r) {
     this.closeModalUser()
     this.showRoutine(r)
@@ -233,6 +249,11 @@ class App extends Component {
 
   closeModal() {
     const modal = document.getElementById('myModal');
+    modal.style.display = "none";
+  }
+
+  closeModalDiet() {
+    const modal = document.getElementById('myModalDiet');
     modal.style.display = "none";
   }
   addExercise() {
@@ -424,9 +445,9 @@ class App extends Component {
     return this.props.diets.map((diet) => {
 
       return (<div className="routine" key={diet._id}>
-       <br />
+      <img src="./meal.svg" className="routineIcon" alt="Routine Icon"/> <br />
         <h3>{diet.name}</h3> <br /> <b>Calories(s):</b>{diet.calories} <button className="openUser" onClick={() => this.showUser(diet.userID)}><h4>{diet.username}</h4></button>
-        <button className="openRoutine" onClick={() => this.showRoutine(diet)}>SEE ROUTINE</button>
+        <button className="openRoutine" onClick={() => this.showDiet(diet)}>SEE DIET</button>
       </div>);
     });
   }
@@ -470,6 +491,16 @@ class App extends Component {
       </div>)
     });
   }
+  renderCommentsDiet() {
+    return this.state.diet.comments.map((comment) => {
+      return (<div className="comment">
+        {comment.username}
+        <span> {this.parseDate(comment.createdAt)} </span>
+        <br /><span>{comment.comment}</span>
+      </div>)
+    });
+  }
+
   renderCurrentExercises() {
     return this.state.routine.exercises.map((exercise, key) => {
       return (<div className="exercise">
@@ -478,6 +509,22 @@ class App extends Component {
         <b>Series:</b>{exercise.series} &nbsp;
         <b>Repetitions:</b> {exercise.repetitions}  &nbsp;
         <b>Rest Time:</b> {exercise.restTime} s
+      </div>)
+    });
+  }
+
+  renderCurrentDays() {
+    return this.state.diet.days.map((dayT, key) => {
+      return (<div className="exercise">
+        <b>Day:</b> {dayT.day}  &nbsp;
+        <b>Breakfast:</b> {dayT.breakfast}s  &nbsp;
+        <b>Brunch:</b>{dayT.brunch} &nbsp;
+        <b>Elevenses:</b> {dayT.elevenses}  &nbsp;
+        <b>Lunch:</b> {dayT.lunch}  &nbsp;
+        <b>Supper:</b> {dayT.supper}  &nbsp;
+        <b>Dinner:</b> {dayT.dinner}  &nbsp;
+        <b>Calories:</b> {dayT.calories} s
+
       </div>)
     });
   }
@@ -495,6 +542,21 @@ class App extends Component {
 
     return (year + '-' + month + '-' + dt);
   }
+
+  
+  addDiet() { 
+    console.log("llega");
+    const purpose = ReactDOM.findDOMNode(this.refs.purpose2).value.trim();
+    const name = ReactDOM.findDOMNode(this.refs.name2).value.trim();
+    console.log("purpose:" + purpose);
+    console.log("name:" + name);
+    let calories = 0;
+    for(i=0; i<this.state.days.length; i++) {
+      calories += parseInt(this.state.days[i].calories);
+    }
+    Meteor.call('diets.insert', name, purpose, calories, this.state.days);
+  }
+
   render() {
     return ( 
       <div className="container">
@@ -569,6 +631,35 @@ class App extends Component {
             </div>
             : ''}
         </div>
+
+        <div id="myModalDiet" className="modal">
+          {this.state.diet ?
+            <div className="modal-content">
+              <div className="modal-header">
+              <span className="close" onClick={this.closeModalDiet.bind(this)}>&times;</span>
+              <h2>Diet Name:</h2> <h1>{this.state.diet.name}</h1> <br />
+              <h2>by:</h2> <h1>{this.state.diet.username}</h1> <br />
+              <h2>Total Calories: </h2> <h1>{this.state.diet.calories} s</h1> <br />
+              <h2>Purpose:</h2> <h1>{this.state.diet.purpose}</h1> <br />
+              
+            
+              {this.renderCurrentDays()}
+              </div>
+              {this.props.currentUser && this.props.user ?
+                <form className="new-comment" onSubmit={this.handleSubmitDiet.bind(this)}  >
+                 <label for="comment2" className="hidden">Comment:</label> <input
+                    type="text"
+                    ref="comment2"
+                    name="comment2"
+                    placeholder="Type to add a new comment"
+                    aria-label="New comment input"
+                  /><button aria-label="Send new comment">SEND</button>
+                </form> : ''}
+                {this.renderCommentsDiet()}
+            </div>
+            : ''}
+        </div> 
+
         <div id="myModalUser" className="modal">
           {this.state.selectedUser ?
             <div className="modal-content">
@@ -676,19 +767,19 @@ class App extends Component {
         {this.state.showDietForm && this.props.currentUser ? <div className="newRoutine">
           <h3>Create a new diet</h3>
           <span className="error">{this.state.formError}</span>
-          <form onSubmit={this.addDiet.bind(this)}>
+          <form >
             <label for="name2">Name</label><input
               required
-              name="name"
+              name="name2"
               type="text"
-              ref="name"
+              ref="name2"
               placeholder="The name of your diet"
             /> <br />
             <label for="purpose2">Purpose</label><input
               required
-              name="purpose"
+              name="purpose2"
               type="text"
-              ref="purpose"
+              ref="purpose2"
               placeholder="The purpose of your diet"
             /> <br />
             <div className="exercises">
@@ -755,7 +846,7 @@ class App extends Component {
           </button>
             {this.renderNewDiet()}
             </div>
-            {this.state.days.length ? <button>ADD DIET</button> : ''}
+            {this.state.days.length ? <button onClick={this.addDiet.bind(this)}>ADD DIET</button> : ''}
           </form>
         </div> : ''}
 
