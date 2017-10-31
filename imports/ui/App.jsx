@@ -23,8 +23,10 @@ class App extends Component {
       selectedOption: 'ganarMasaMuscular',
       interestingIn: '',
       selectedUser: {},
-
+      search: '',
     };
+
+    this.searchChange = this.searchChange.bind(this);
   }
 
   handleSubmit(event) {
@@ -63,6 +65,14 @@ class App extends Component {
     console.log(JSON.stringify(temp));
     Meteor.call('exercisers.insert', temp);
   }
+  searchChange(event) {
+    const target = event.target;
+    const value = target.value;
+    this.state.search = target.value;
+    this.setState(prevState => ({
+        search: this.state.search
+    }));
+}
   setInteresting(event) {
     console.log(event.target.value);
     this.setState(
@@ -288,14 +298,27 @@ class App extends Component {
 
 
   renderRoutines() {
-    return this.props.routines.map((routine) => {
-
-      return (<div className="routine" key={routine._id}>
-        <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
-        <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
-        <button aria-label="See this routine" className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
-      </div>);
-    });
+    const currentSearch = this.state.search.toUpperCase();
+    if(currentSearch === '') {
+      return this.props.routines.map((routine) => {
+        
+              return (<div className="routine" key={routine._id}>
+                <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
+                <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+                <button aria-label="See this routine" className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+              </div>);
+            });
+    }
+    else {
+      return this.props.routines.filter(function(routineFilter){return routineFilter.name.toUpperCase().includes(currentSearch);}).map((routine) => {
+        
+              return (<div className="routine" key={routine._id}>
+                <img src={this.getRandomImg()} className="routineIcon" alt="Routine Icon"/> <br />
+                <h3>{routine.name}</h3> <br /> <b>Duration:</b>{routine.duration}s <br /><button aria-label="See this user" className="openUser" onClick={() => this.showUser(routine.userID)}><h4>{routine.username}</h4></button>
+                <button aria-label="See this routine" className="openRoutine" onClick={() => this.showRoutine(routine)}>SEE ROUTINE</button>
+              </div>);
+            });
+    }
   }
   renderNewRoutine() {
     if (this.state.exercises.length > 0) {
@@ -349,13 +372,16 @@ class App extends Component {
   render() {
     return ( 
       <div className="container">
+        <div id="searchBar"><form className="search" onSubmit={this.handleSubmit.bind(this)}  >
+                  <label for="search"> Search: < input name="search" placeholder="Search by routine name"
+                    aria-label="Search by routine name" type = "text" value = { this.state.search} onChange = {this.searchChange} /> </label>
+                </form> </div>
         <header>
         
           <AccountsUIWrapper />
           <h1>GYM<br />BUDDIES <img src="./weightlifting.svg" className="weights" alt="Wight Lifting Image" /></h1>
         <h2>Share your routines and get comments,<br /> reactions and followers from other exercise lovers</h2>
         </header>
-
         {!this.props.user && this.props.currentUser ?
             <div className="cmpReg"><h2>Complete your registry!</h2> <form name="register" onSubmit={this.handleSubmit2.bind(this)} >
 

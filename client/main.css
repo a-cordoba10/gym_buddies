@@ -15,6 +15,17 @@ button {
 button:focus, input[type=text], input[type=number] {
   outline:0;
 }
+#searchBar {
+  position: fixed;
+  width: 100vw;
+  height: 5vh;
+  padding: 0.5%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+}
 .container {
   text-align: center;
   margin: 0 auto;
