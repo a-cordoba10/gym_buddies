@@ -128,6 +128,7 @@ input[type=text], input[type=number] {
 .routine {
   width: 200px;
   height: auto;
+  /*Lady Pinzon: cuando se usa 0 no es necesario especificar la unidad*/
   box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.09);
   margin: 50px;
   padding: 25px;
@@ -156,6 +157,7 @@ input[type=text], input[type=number] {
     color: black;
     padding: 15px 25px;
     margin-bottom: 5px;
+  /*Lady Pinzon: Hay dos declaraciones de padding, podría ser solo una*/
 }
 .openUser h4 {
   margin: 0;
