@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { Exercisers } from '../api/exercisers.js';
 import { Routines } from '../api/routine.js';
-
+import { Diets } from '../api/diets.js';
 
 import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 
@@ -18,7 +18,9 @@ class App extends Component {
     this.state = {
       hideCompleted: false,
       showRoutineForm: false,
+      showDietForm: false,
       exercises: [],
+      days:[],
       formError: '',
       selectedOption: 'ganarMasaMuscular',
       interestingIn: '',
@@ -74,7 +76,26 @@ class App extends Component {
       showRoutineForm: !this.state.showRoutineForm,
     });
   }
+  toggleShowForm2() {
+    this.setState({
+      showDietForm: !this.state.showDietForm,
+    });
+  }
+  addDiet() { 
+    console.log("llega");
+    const purpose = ReactDOM.findDOMNode(this.refs.purpose2).value.trim();
+    const name = ReactDOM.findDOMNode(this.refs.name2).value.trim();
+    console.log("purpose:" + purpose);
+    console.log("name:" + name);
+    let calories = 0;
+    for(i=0; i<this.state.days.length; i++) {
+      calories += parseInt(this.state.days[i].calories);
+    }
+    Meteor.call('diets.insert', name, purpose, calories, this.state.days);
+  }
+  
   addRoutine() {
+
     const purpose = ReactDOM.findDOMNode(this.refs.purpose).value.trim();
     const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
     let duration = 0;
@@ -83,6 +104,85 @@ class App extends Component {
     }
     Meteor.call('routines.insert', name, purpose, duration, this.state.exercises);
   }
+
+  addDay() {
+
+    const breakfast = ReactDOM.findDOMNode(this.refs.breakfast).value.trim();
+    const brunch = ReactDOM.findDOMNode(this.refs.brunch).value.trim();
+    const elevenses = ReactDOM.findDOMNode(this.refs.elevenses).value.trim();
+    const lunch = ReactDOM.findDOMNode(this.refs.lunch).value.trim();
+    const supper = ReactDOM.findDOMNode(this.refs.supper).value.trim();
+    const dinner = ReactDOM.findDOMNode(this.refs.dinner).value.trim();
+    const calories = ReactDOM.findDOMNode(this.refs.calories).value.trim();
+    const day = ReactDOM.findDOMNode(this.refs.day).value.trim();
+     
+    if ( breakfast !== '' && brunch !== '' && elevenses !== '' && lunch !== '' &&
+    supper !== '' && dinner !== '' && calories !== ''  && day !== '' ) {
+      const newDay = {
+        breakfast,
+        brunch,
+        elevenses,
+        lunch,
+        supper,
+        dinner,
+        calories,
+        day,
+      };
+      const updateDays = this.state.days;
+      updateDays.push(newDay);
+      this.setState({
+        days: updateDays,
+        formError: '',
+      });
+    } else {
+      if (breakfast === '' ) {
+        this.setState({
+          formError: 'Describe your breakfast!',
+        });
+      }
+      else if (brunch === '') {
+        this.setState({
+          formError: 'Describe your brunch!',
+        });
+      }
+      else if (elevenses === '') {
+        this.setState({
+          formError: 'Describe your elevenses!',
+        });
+      }
+      else if (lunch === '') {
+        this.setState({
+          formError: 'Describe your lunch!',
+        });
+      }
+      else if (dinner === '') {
+        this.setState({
+          formError: 'Describe your dinner!',
+        });
+      }
+      else if (calories === '') {
+        this.setState({
+          formError: 'Describe your calories!',
+        });
+      }
+      else if (day === '') {
+        this.setState({
+          formError: 'Name your day!',
+        });
+      }
+    }
+
+  }
+
+  deleteDay(key) {
+    const updateDays = this.state.days;
+    updateDays.splice(key, 1);
+    this.setState({
+      days: updateDays,
+      formError: '',
+    });
+  }
+
   addComment() {
     const comment = ReactDOM.findDOMNode(this.refs.comment).value.trim();
     Meteor.call('routines.addComment', this.state.routine._id, comment);
@@ -297,6 +397,17 @@ class App extends Component {
       </div>);
     });
   }
+  renderDiets() {
+    return this.props.diets.map((diet) => {
+
+      return (<div className="routine" key={diet._id}>
+       <br />
+        <h3>{diet.name}</h3> <br /> <b>Calories(s):</b>{diet.calories} <button className="openUser" onClick={() => this.showUser(diet.userID)}><h4>{diet.username}</h4></button>
+        <button className="openRoutine" onClick={() => this.showRoutine(diet)}>SEE ROUTINE</button>
+      </div>);
+    });
+  }
+
   renderNewRoutine() {
     if (this.state.exercises.length > 0) {
       return this.state.exercises.map((exercise, key) => {
@@ -312,6 +423,21 @@ class App extends Component {
     }
     return (<div> <br /> Add some exercises to your routine! </div>);
   }
+
+  renderNewDiet() {
+
+    if (this.state.days.length > 0) {
+      return this.state.days.map((tem, key) => {
+        return (<div className="exercise">
+          <b>Day:</b> {tem.day}  &nbsp;
+          <b>Calories(cal):</b> {tem.calories}  &nbsp;
+          <button type="button" onClick={() => this.deleteDay(key)}>DELETE</button>
+        </div>)
+      });
+    }
+    return (<div> <br /> Add some exercises to your routine! </div>);
+  }
+
   renderComments() {
     return this.state.routine.comments.map((comment) => {
       return (<div className="comment">
@@ -379,6 +505,9 @@ class App extends Component {
           }
         {this.props.currentUser && this.props.user ?
             <button className="addRoutine" onClick={this.toggleShowForm.bind(this)}>ADD ROUTINE</button> : ''
+          }
+          {this.props.currentUser && this.props.user ?
+            <button className="addDiet" onClick={this.toggleShowForm2.bind(this)}>ADD DIET</button> : ''
           }
         <div id="myModal" className="modal">
           {this.state.routine ?
@@ -507,11 +636,103 @@ class App extends Component {
             {this.state.exercises.length ? <button>ADD ROUTINE</button> : ''}
           </form>
         </div> : ''}
+
+        {this.state.showDietForm && this.props.currentUser ? <div className="newRoutine">
+          <h3>Create a new diet</h3>
+          <span className="error">{this.state.formError}</span>
+          <form onSubmit={this.addDiet.bind(this)}>
+            <label for="name2">Name</label><input
+              required
+              name="name"
+              type="text"
+              ref="name"
+              placeholder="The name of your diet"
+            /> <br />
+            <label for="purpose2">Purpose</label><input
+              required
+              name="purpose"
+              type="text"
+              ref="purpose"
+              placeholder="The purpose of your diet"
+            /> <br />
+            <div className="exercises">
+              <h4>Day</h4>
+              <label for="day">Day</label><input
+              required
+              name="day"
+              type="text"
+              ref="day"
+              placeholder="Diet day "
+            /> <br/> 
+            <label for="breakfast">Breakfast</label><input
+              required
+              name="breakfast"
+              type="text"
+              ref="breakfast"
+              placeholder="Breakfast description"
+            /> <br/> 
+            <label for="brunch">Brunch</label><input
+              required
+              name="brunch"
+              type="text"
+              ref="brunch"
+              placeholder="Brunch description"
+            /> <br/><label for="elevenses">Elevenses</label><input
+              required
+              name="elevenses"
+              type="text"
+              ref="elevenses"
+              placeholder="Elevenses description"
+            /> <br/> 
+            <label for="lunch">Lunch</label><input
+              required
+              name="lunch"
+              type="text"
+              ref="lunch"
+              placeholder="Lunch description"
+            /> <br/><label for="supper">Supper</label><input
+              required
+              name="supper"
+              type="text"
+              ref="supper"
+              placeholder="Supper description"
+            /> <br/> 
+            <label for="dinner">Dinner</label><input
+              required
+              name="dinner"
+              type="text"
+              ref="dinner"
+              placeholder="Dinner description"
+            /> <br/> 
+            <label for="calories">Calories (c)</label>
+            <input
+              name="calories"
+              type="number"
+              min="300"
+              ref="calories"
+              placeholder="Diet calories"
+            /> <br />
+            <button
+              type="button"
+              onClick={this.addDay.bind(this)}>
+              ADD DAY
+          </button>
+            {this.renderNewDiet()}
+            </div>
+            {this.state.days.length ? <button>ADD DIET</button> : ''}
+          </form>
+        </div> : ''}
+
         { this.props.currentUser && this.props.user ? <ul> My follows: 
           {this.renderFollowers()}
         </ul> :''}
         <div className="routines">
           {this.renderRoutines()}
+        
+      </div>
+    
+      <div className="routines">
+          {this.renderDiets()}
         
       </div>
       </div>
@@ -527,18 +748,21 @@ App.propTypes = {
 
 export default createContainer(() => {
           Meteor.subscribe('exercisers');
-        Meteor.subscribe('routines');
+          Meteor.subscribe('routines');
+          Meteor.subscribe('diets');
   if (Meteor.user()) {
     return {
-          user: Exercisers.findOne({userId: Meteor.user()._id }),
+      user: Exercisers.findOne({userId: Meteor.user()._id }),
       routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
+      diets: Diets.find({}, {sort: {createdAt: -1 } }).fetch(),
       currentUser: Meteor.user(),
       exercisers: Exercisers.find({}).fetch(),
     }
   } else {
     return {
 
-          routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
+      routines: Routines.find({}, {sort: {createdAt: -1 } }).fetch(),
+      diets: Diets.find({}, {sort: {createdAt: -1 } }).fetch(),
       currentUser: Meteor.user(),
 
     }

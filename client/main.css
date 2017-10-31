@@ -86,6 +86,23 @@ input[type=text], input[type=number] {
   cursor: pointer;
   background-color: #231d96;
 }
+
+.addDiet {
+  font-size: 1.5em;
+  font-weight: 900;
+  background-color: #38e04c;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 25px 35px;
+  transition: all 0.25s;
+}
+.addDiet:hover {
+  cursor: pointer;
+  background-color: #1f7d2a;
+}
+
+
 .routines {
   min-height: 60vh;
 }
