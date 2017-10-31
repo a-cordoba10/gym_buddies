@@ -366,13 +366,14 @@ class App extends Component {
     const modal = document.getElementById('myModalUser');
     modal.style.display = "none";
   }
+  
   renderRoutinesUser(idUser) {
     if (Meteor.user()) {
 
       return this.props.routines.filter(function (elem) {
         return elem.userID == idUser;
       }).map((exer) => {
-
+        //Esta renderización podra renderizar botones externos
         return (<button key={exer._id} aria-label="See this routine" className="routineButton" onClick={() => this.showRoutine2(exer)}>{exer.name}</button>);
       });
 
@@ -389,7 +390,7 @@ class App extends Component {
           }
         }
       }).map((exer) => {
-
+        //Esta renderización podra renderizar botones externos
         return (<div key={exer._id} >   <button aria-label="See this person that you're following" onClick={() => this.showUser(exer.userId)}>{exer.username}</button>  </div>);
       });
 
@@ -498,6 +499,7 @@ class App extends Component {
   render() {
     return ( 
       <div className="container">
+        //El search bar se podría extraer en un componente aparte
         <div id="searchBar"><form className="search" onSubmit={this.handleSubmit.bind(this)}  >
                   <label for="search"> Search: < input name="search" placeholder="Search by routine name"
                     aria-label="Search by routine name" type = "text" value = { this.state.search} onChange = {this.searchChange} /> </label>
@@ -553,6 +555,7 @@ class App extends Component {
               <button aria-label="Add broken heart reaction to this routine"  onClick={()=>this.addReaction('poop')} disabled><img src="./broken-heart.svg" className="icontReact" alt="Add reaction: 'This routine breaks my heart!'" />{this.state.routine.reactions.poop}</button>
               <button aria-label="Add poop reaction to this routine"  onClick={()=>this.addReaction('toy')} disabled><img src="./baby-poop.svg" className="icontReact" alt="Add reaction: 'This routine is poop!'"  />{this.state.routine.reactions.toy}</button></span>  }
               
+
               {this.renderCurrentExercises()}
               </div>
               {this.props.currentUser && this.props.user ?
