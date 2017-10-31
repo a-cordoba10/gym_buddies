@@ -26,12 +26,14 @@ Meteor.methods({
       purpose,
       duration,
       comments: [],
+      commentCount: 0,
       userReactions: [],
+      reactionCount: 0,
       reactions: {
-        toy: 0, //Severo muñeco
-        tiger: 0, //Fuerza tigre
-        rat: 0, //Buena la rata
-        poop: 0, //Mucho popo
+        toy: 0,
+        tiger: 0,
+        rat: 0,
+        poop: 0, 
       },
       exercises,
     });
@@ -59,6 +61,11 @@ Meteor.methods({
       createdAt: new Date(),
       comment,
     }
+    Routines.update(routineId, {
+            $set: {
+              'commentCount': routine.commentCount + 1,
+            }
+          });
     Routines.update(routineId, { $addToSet: { comments: newComment } });
   },
   'routines.addReaction'(routineId, reaction) {
@@ -78,6 +85,7 @@ Meteor.methods({
         if (userReaction === 'toy') {
           Routines.update(routineId, {
             $set: {
+              'reactionCount': routine.reactionCount - 1,
               'reactions.toy': routine.reactions.toy - 1,
             }
           });
@@ -85,6 +93,7 @@ Meteor.methods({
         if (userReaction === 'tiger') {
           Routines.update(routineId, {
             $set: {
+              'reactionCount': routine.reactionCount - 1,
               'reactions.tiger': routine.reactions.tiger - 1,
             }
           });
@@ -92,6 +101,7 @@ Meteor.methods({
         if (userReaction === 'rat') {
           Routines.update(routineId, {
             $set: {
+              'reactionCount': routine.reactionCount - 1,
               'reactions.rat': routine.reactions.rat - 1,
             }
           });
@@ -99,6 +109,7 @@ Meteor.methods({
         if (userReaction === 'poop') {
           Routines.update(routineId, {
             $set: {
+              'reactionCount': routine.reactionCount - 1,
               'reactions.poop': routine.reactions.poop - 1,
             }
           });
@@ -115,6 +126,7 @@ Meteor.methods({
     if (reaction === 'toy') {
       Routines.update(routineId, {
         $set: {
+          'reactionCount': routine.reactionCount +1,
           'reactions.toy': routine.reactions.toy + 1,
         }
       });
@@ -122,6 +134,7 @@ Meteor.methods({
     if (reaction === 'tiger') {
       Routines.update(routineId, {
         $set: {
+          'reactionCount': routine.reactionCount +1,
           'reactions.tiger': routine.reactions.tiger + 1,
         }
       });
@@ -129,6 +142,7 @@ Meteor.methods({
     if (reaction === 'rat') {
       Routines.update(routineId, {
         $set: {
+          'reactionCount': routine.reactionCount +1,
           'reactions.rat': routine.reactions.rat + 1,
         }
       });
@@ -136,6 +150,7 @@ Meteor.methods({
     if (reaction === 'poop') {
       Routines.update(routineId, {
         $set: {
+          'reactionCount': routine.reactionCount +1,
           'reactions.poop': routine.reactions.poop + 1,
         }
       });

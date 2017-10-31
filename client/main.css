@@ -1,4 +1,7 @@
 /* CSS declarations go here */
+html {
+  overflow-x: hidden;
+}
 body {
   font-family: 'Muli', sans-serif;
   background-color: white;
@@ -11,6 +14,17 @@ button {
 }
 button:focus, input[type=text], input[type=number] {
   outline:0;
+}
+#searchBar {
+  position: fixed;
+  width: 100vw;
+  height: 5vh;
+  padding: 0.5%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
 }
 .container {
   text-align: center;
@@ -46,11 +60,24 @@ header {
   padding: 10vh 5vw;
   color: white;
   background-color: black;
-  background: url(cover.png) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+}
+@media only screen and (min-width: 1024px) {
+  header {
+    background: url(cover1024.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+  }
+}
+@media only screen and (min-width: 1600px) {
+  header {
+    background: url(cover.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+  }
 }
 .newRoutine {
   display: inline-block;
@@ -111,6 +138,9 @@ input[type=text], input[type=number] {
 }
 #login-buttons {
   display: block;
+}
+.hidden{
+  visibility:hidden;
 }
 .routine {
   width: 200px;
@@ -175,9 +205,19 @@ input[type=text], input[type=number] {
 h1 {
   text-align: left;
   font-weight: 900;
-  font-size: 6em;
+  font-size: 1.5em;
   margin: 0;
   margin-top: 5vh;
+}
+@media only screen and (min-width: 355px) {
+  h1 {
+    font-size: 3em;
+  }
+}
+@media only screen and (min-width: 710px) {
+  h1 {
+    font-size: 6em;
+  }
 }
 h2 {
   font-weight: 300;
