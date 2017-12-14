@@ -35,7 +35,7 @@ button:focus, input[type=text], input[type=number] {
 .login-buttons-dropdown-align-{
   text-align: right;
 }
-#login-dropdown-list {
+#login-dropdown-list { 
   top: 3.5vh;
   right: 0;
   left: inherit;
